@@ -1,7 +1,32 @@
 import React from 'react';
 import { ArrowUpRight } from 'lucide-react';
 
-export const Hero: React.FC = () => {
+interface HeroProps {
+  onSelectCategory: (category: string) => void;
+}
+
+export const Hero: React.FC<HeroProps> = ({ onSelectCategory }) => {
+  const handleSmoothScroll = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
+    e.preventDefault();
+    
+    // If clicking Shop Now, reset filter to All
+    if (targetId === 'shopping-grid') {
+        onSelectCategory('All');
+    }
+    
+    const element = document.getElementById(targetId);
+    if (element) {
+       const headerOffset = 80; // Height of the sticky navbar
+       const elementPosition = element.getBoundingClientRect().top;
+       const offsetPosition = elementPosition + window.scrollY - headerOffset;
+   
+       window.scrollTo({
+         top: offsetPosition,
+         behavior: "smooth"
+       });
+    }
+  };
+
   return (
     <div className="relative overflow-hidden bg-stone-100">
       <div className="max-w-7xl mx-auto">
@@ -17,12 +42,20 @@ export const Hero: React.FC = () => {
               </p>
               <div className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start gap-4">
                 <div className="rounded-md shadow">
-                  <a href="#products" className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-full text-white bg-stone-900 hover:bg-stone-800 md:py-4 md:text-lg transition-all">
+                  <a 
+                    href="#shopping-grid" 
+                    onClick={(e) => handleSmoothScroll(e, 'shopping-grid')}
+                    className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-full text-white bg-stone-900 hover:bg-stone-800 md:py-4 md:text-lg transition-all"
+                  >
                     Shop Now
                   </a>
                 </div>
                 <div className="mt-3 sm:mt-0 sm:ml-3">
-                  <a href="#" className="w-full flex items-center justify-center px-8 py-3 border border-stone-300 text-base font-medium rounded-full text-stone-700 bg-white hover:bg-stone-50 md:py-4 md:text-lg transition-all">
+                  <a 
+                    href="#lookbook" 
+                    onClick={(e) => handleSmoothScroll(e, 'lookbook')}
+                    className="w-full flex items-center justify-center px-8 py-3 border border-stone-300 text-base font-medium rounded-full text-stone-700 bg-white hover:bg-stone-50 md:py-4 md:text-lg transition-all"
+                  >
                     View Lookbook <ArrowUpRight className="ml-2 w-4 h-4" />
                   </a>
                 </div>

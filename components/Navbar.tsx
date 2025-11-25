@@ -6,9 +6,13 @@ interface NavbarProps {
   cartItems: CartItem[];
   onOpenCart: () => void;
   onOpenHistory: () => void;
+  activeCategory: string;
+  onSelectCategory: (category: string) => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ cartItems, onOpenCart, onOpenHistory }) => {
+const NAV_CATEGORIES = ['All', 'Shirts', 'Jackets', 'Hoodies', 'Pants', 'Outerwear'];
+
+export const Navbar: React.FC<NavbarProps> = ({ cartItems, onOpenCart, onOpenHistory, activeCategory, onSelectCategory }) => {
   const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
   return (
@@ -21,21 +25,23 @@ export const Navbar: React.FC<NavbarProps> = ({ cartItems, onOpenCart, onOpenHis
             <button className="p-2 -ml-2 text-stone-600 hover:text-black md:hidden">
               <Menu size={24} />
             </button>
-            <a href="#" className="text-2xl font-bold tracking-tight text-stone-900 font-serif">
+            <a href="#" onClick={(e) => { e.preventDefault(); onSelectCategory('All'); }} className="text-2xl font-bold tracking-tight text-stone-900 font-serif">
               STYLEHIVE
             </a>
           </div>
 
           {/* Desktop Links */}
           <div className="hidden md:flex items-center space-x-8">
-            {['New Arrivals', 'Men', 'Women', 'Kids', 'Brands', 'Sale'].map((item) => (
-              <a 
+            {NAV_CATEGORIES.map((item) => (
+              <button 
                 key={item} 
-                href="#" 
-                className="text-sm font-medium text-stone-600 hover:text-black transition-colors"
+                onClick={() => onSelectCategory(item)}
+                className={`text-sm font-medium transition-colors ${
+                    activeCategory === item ? 'text-stone-900 font-bold underline decoration-2 underline-offset-4' : 'text-stone-600 hover:text-black'
+                }`}
               >
                 {item}
-              </a>
+              </button>
             ))}
           </div>
 

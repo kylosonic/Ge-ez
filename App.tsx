@@ -24,6 +24,21 @@ export default function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<string>('All');
+
+  const handleCategorySelect = (category: string) => {
+    setSelectedCategory(category);
+    // Smooth scroll to grid with offset
+    setTimeout(() => {
+        const element = document.getElementById('shopping-grid');
+        if (element) {
+            const headerOffset = 80;
+            const elementPosition = element.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.scrollY - headerOffset;
+            window.scrollTo({ top: offsetPosition, behavior: "smooth" });
+        }
+    }, 50);
+  };
 
   const handleAddToCart = (product: Product) => {
     setCartItems(prev => {
@@ -59,13 +74,17 @@ export default function App() {
         cartItems={cartItems} 
         onOpenCart={() => setIsCartOpen(true)} 
         onOpenHistory={() => setIsHistoryOpen(true)}
+        activeCategory={selectedCategory}
+        onSelectCategory={handleCategorySelect}
       />
       
       <main>
-        <Hero />
+        <Hero onSelectCategory={handleCategorySelect} />
         <ProductGrid 
           products={MOCK_PRODUCTS} 
-          onAddToCart={handleAddToCart} 
+          onAddToCart={handleAddToCart}
+          selectedCategory={selectedCategory}
+          onSelectCategory={handleCategorySelect}
         />
         
         {/* Footer */}
@@ -92,10 +111,10 @@ export default function App() {
                 <div>
                     <h4 className="font-bold text-lg mb-4 font-serif">Menu</h4>
                     <ul className="space-y-2 text-stone-500 text-sm">
-                        <li><a href="#" className="hover:text-stone-900">Men</a></li>
-                        <li><a href="#" className="hover:text-stone-900">Women</a></li>
-                        <li><a href="#" className="hover:text-stone-900">Children</a></li>
-                        <li><a href="#" className="hover:text-stone-900">Popular</a></li>
+                        <li><button onClick={() => handleCategorySelect('Shirts')} className="hover:text-stone-900">Shirts</button></li>
+                        <li><button onClick={() => handleCategorySelect('Jackets')} className="hover:text-stone-900">Jackets</button></li>
+                        <li><button onClick={() => handleCategorySelect('Hoodies')} className="hover:text-stone-900">Hoodies</button></li>
+                        <li><button onClick={() => handleCategorySelect('All')} className="hover:text-stone-900">Popular</button></li>
                     </ul>
                 </div>
                 <div>
