@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
-import { X, Upload, CheckCircle, AlertCircle, Loader2, Smartphone, FileImage, Truck, Clock, ChevronRight, ChevronLeft, ShoppingBag } from 'lucide-react';
+import { X, Upload, CheckCircle, AlertCircle, Loader2, Smartphone, FileImage, Clock, ChevronRight, ChevronLeft } from 'lucide-react';
 import { analyzeReceipt } from '../services/geminiService';
-import { PaymentStatus, CartItem, Order } from '../types';
+import { PaymentStatus, CartItem, Order, User } from '../types';
 
 interface CheckoutModalProps {
   isOpen: boolean;
@@ -9,6 +9,8 @@ interface CheckoutModalProps {
   cartItems: CartItem[];
   totalAmount: number; // This is the subtotal
   onPaymentSuccess: () => void;
+  user: User | null;
+  onOpenLogin: () => void;
 }
 
 const SHIPPING_OPTIONS = [
@@ -22,7 +24,15 @@ const STEPS = [
   { id: 3, name: 'Review' },
 ];
 
-export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, cartItems, totalAmount, onPaymentSuccess }) => {
+export const CheckoutModal: React.FC<CheckoutModalProps> = ({ 
+    isOpen, 
+    onClose, 
+    cartItems, 
+    totalAmount, 
+    onPaymentSuccess,
+    user,
+    onOpenLogin
+}) => {
   const [step, setStep] = useState(1);
   const [phoneNumber, setPhoneNumber] = useState('');
   const [receiptFile, setReceiptFile] = useState<File | null>(null);
@@ -33,6 +43,11 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, c
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   if (!isOpen) return null;
+
+  // Ensure user is logged in before proceeding too far? 
+  // For this store, let's say guest checkout is allowed but we prompt login.
+  // Actually, let's require login for simplicity in tracking or just fallback to guest email if we had an input.
+  // Given the request, we'll use the user.email if logged in, otherwise 'guest'.
 
   const selectedShipping = SHIPPING_OPTIONS.find(opt => opt.id === selectedShippingId) || SHIPPING_OPTIONS[0];
   const finalTotal = totalAmount + selectedShipping.price;
@@ -75,6 +90,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, c
         const newOrder: Order = {
           id: Date.now().toString(),
           date: new Date().toISOString(),
+          userEmail: user?.email || 'guest@stylehive.com',
           items: cartItems,
           total: finalTotal,
           status: 'Verified',
@@ -117,6 +133,13 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, c
 
   const renderShippingStep = () => (
     <div className="space-y-4">
+      {!user && (
+          <div className="bg-blue-50 p-3 rounded-md text-sm text-blue-700 mb-4 flex justify-between items-center">
+             <span>Sign in to save this order to your account.</span>
+             <button onClick={onOpenLogin} className="font-semibold underline">Sign In</button>
+          </div>
+      )}
+
       <h4 className="text-lg font-medium text-stone-900">Select Shipping Method</h4>
       <div className="grid grid-cols-1 gap-3">
         {SHIPPING_OPTIONS.map((option) => (

@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { ProductGrid } from './components/ProductGrid';
 import { Cart } from './components/Cart';
 import { CheckoutModal } from './components/CheckoutModal';
 import { OrderHistoryModal } from './components/OrderHistoryModal';
-import { Product, CartItem } from './types';
+import { AuthModal } from './components/AuthModal';
+import { AdminDashboard } from './components/AdminDashboard';
+import { Product, CartItem, User, Order } from './types';
 
-// Mock Data
+// Mock Data Initializer
 const MOCK_PRODUCTS: Product[] = [
   { id: 1, name: 'Plain White Shirt', price: 29.00, category: 'Shirts', image: 'https://picsum.photos/400/500?random=10' },
   { id: 2, name: 'Classic Cardigan', price: 49.00, category: 'Outerwear', image: 'https://picsum.photos/400/500?random=11' },
@@ -20,15 +22,58 @@ const MOCK_PRODUCTS: Product[] = [
 ];
 
 export default function App() {
+  const [products, setProducts] = useState<Product[]>([]);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
+  
+  // Modals
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [isAdminOpen, setIsAdminOpen] = useState(false);
+  
+  // App State
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
+  const [user, setUser] = useState<User | null>(null);
+
+  // Load Data
+  useEffect(() => {
+    // Load User
+    const savedUser = localStorage.getItem('stylehive_user');
+    if (savedUser) {
+        setUser(JSON.parse(savedUser));
+    }
+
+    // Load Products (allow admin to have persisted changes)
+    const savedProducts = localStorage.getItem('stylehive_products');
+    if (savedProducts) {
+        setProducts(JSON.parse(savedProducts));
+    } else {
+        setProducts(MOCK_PRODUCTS);
+        localStorage.setItem('stylehive_products', JSON.stringify(MOCK_PRODUCTS));
+    }
+
+    // Load Orders
+    const savedOrders = localStorage.getItem('stylehive_orders');
+    if (savedOrders) {
+        setOrders(JSON.parse(savedOrders));
+    }
+  }, []);
+
+  // Handlers
+  const handleLogin = (newUser: User) => {
+    setUser(newUser);
+    localStorage.setItem('stylehive_user', JSON.stringify(newUser));
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+    localStorage.removeItem('stylehive_user');
+  };
 
   const handleCategorySelect = (category: string) => {
     setSelectedCategory(category);
-    // Smooth scroll to grid with offset
     setTimeout(() => {
         const element = document.getElementById('shopping-grid');
         if (element) {
@@ -64,6 +109,30 @@ export default function App() {
 
   const handlePaymentSuccess = () => {
     setCartItems([]);
+    // Refresh orders
+    const savedOrders = localStorage.getItem('stylehive_orders');
+    if (savedOrders) {
+        setOrders(JSON.parse(savedOrders));
+    }
+  };
+
+  // Admin Handlers
+  const handleAddProduct = (product: Product) => {
+      const updatedProducts = [...products, product];
+      setProducts(updatedProducts);
+      localStorage.setItem('stylehive_products', JSON.stringify(updatedProducts));
+  };
+
+  const handleDeleteProduct = (id: number) => {
+      const updatedProducts = products.filter(p => p.id !== id);
+      setProducts(updatedProducts);
+      localStorage.setItem('stylehive_products', JSON.stringify(updatedProducts));
+  };
+
+  const handleUpdateOrderStatus = (orderId: string, status: Order['status']) => {
+      const updatedOrders = orders.map(o => o.id === orderId ? { ...o, status } : o);
+      setOrders(updatedOrders);
+      localStorage.setItem('stylehive_orders', JSON.stringify(updatedOrders));
   };
 
   const cartTotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
@@ -76,12 +145,16 @@ export default function App() {
         onOpenHistory={() => setIsHistoryOpen(true)}
         activeCategory={selectedCategory}
         onSelectCategory={handleCategorySelect}
+        user={user}
+        onLoginClick={() => setIsAuthOpen(true)}
+        onLogout={handleLogout}
+        onOpenAdmin={() => setIsAdminOpen(true)}
       />
       
       <main>
         <Hero onSelectCategory={handleCategorySelect} />
         <ProductGrid 
-          products={MOCK_PRODUCTS} 
+          products={products} 
           onAddToCart={handleAddToCart}
           selectedCategory={selectedCategory}
           onSelectCategory={handleCategorySelect}
@@ -146,12 +219,33 @@ export default function App() {
         cartItems={cartItems}
         totalAmount={cartTotal}
         onPaymentSuccess={handlePaymentSuccess}
+        user={user}
+        onOpenLogin={() => { setIsCheckoutOpen(false); setIsAuthOpen(true); }}
       />
 
       <OrderHistoryModal 
         isOpen={isHistoryOpen}
         onClose={() => setIsHistoryOpen(false)}
+        user={user}
       />
+
+      <AuthModal 
+        isOpen={isAuthOpen}
+        onClose={() => setIsAuthOpen(false)}
+        onLogin={handleLogin}
+      />
+
+      {user?.role === 'admin' && (
+          <AdminDashboard 
+            isOpen={isAdminOpen}
+            onClose={() => setIsAdminOpen(false)}
+            products={products}
+            onAddProduct={handleAddProduct}
+            onDeleteProduct={handleDeleteProduct}
+            orders={orders}
+            onUpdateOrderStatus={handleUpdateOrderStatus}
+          />
+      )}
     </div>
   );
 }

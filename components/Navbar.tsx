@@ -1,6 +1,6 @@
-import React from 'react';
-import { ShoppingBag, Search, Menu, User } from 'lucide-react';
-import { CartItem } from '../types';
+import React, { useState } from 'react';
+import { ShoppingBag, Search, Menu, User, LogOut, LayoutDashboard, History } from 'lucide-react';
+import { CartItem, User as UserType } from '../types';
 
 interface NavbarProps {
   cartItems: CartItem[];
@@ -8,11 +8,26 @@ interface NavbarProps {
   onOpenHistory: () => void;
   activeCategory: string;
   onSelectCategory: (category: string) => void;
+  user: UserType | null;
+  onLoginClick: () => void;
+  onLogout: () => void;
+  onOpenAdmin: () => void;
 }
 
 const NAV_CATEGORIES = ['All', 'Shirts', 'Jackets', 'Hoodies', 'Pants', 'Outerwear'];
 
-export const Navbar: React.FC<NavbarProps> = ({ cartItems, onOpenCart, onOpenHistory, activeCategory, onSelectCategory }) => {
+export const Navbar: React.FC<NavbarProps> = ({ 
+    cartItems, 
+    onOpenCart, 
+    onOpenHistory, 
+    activeCategory, 
+    onSelectCategory,
+    user,
+    onLoginClick,
+    onLogout,
+    onOpenAdmin
+}) => {
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
   return (
@@ -50,13 +65,71 @@ export const Navbar: React.FC<NavbarProps> = ({ cartItems, onOpenCart, onOpenHis
             <button className="p-2 text-stone-600 hover:text-black transition-colors hidden sm:block">
               <Search size={20} />
             </button>
-            <button 
-              onClick={onOpenHistory}
-              className="p-2 text-stone-600 hover:text-black transition-colors"
-              title="Order History"
-            >
-              <User size={20} />
-            </button>
+            
+            {/* User Profile / Login */}
+            <div className="relative">
+                {user ? (
+                    <button 
+                        onClick={() => setIsProfileOpen(!isProfileOpen)}
+                        className="flex items-center gap-2 p-1 rounded-full hover:bg-stone-100 transition-colors"
+                    >
+                        {user.avatar ? (
+                            <img src={user.avatar} alt={user.name} className="w-8 h-8 rounded-full border border-stone-200" />
+                        ) : (
+                            <div className="w-8 h-8 rounded-full bg-stone-200 flex items-center justify-center text-stone-600 font-bold">
+                                {user.name.charAt(0)}
+                            </div>
+                        )}
+                    </button>
+                ) : (
+                    <button 
+                        onClick={onLoginClick}
+                        className="p-2 text-stone-600 hover:text-black transition-colors"
+                        title="Sign In"
+                    >
+                        <User size={20} />
+                    </button>
+                )}
+
+                {/* Dropdown Menu */}
+                {isProfileOpen && user && (
+                    <>
+                        <div className="fixed inset-0 z-10" onClick={() => setIsProfileOpen(false)} />
+                        <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-20 ring-1 ring-black ring-opacity-5 animate-in fade-in zoom-in-95 duration-100 origin-top-right">
+                            <div className="px-4 py-2 border-b border-stone-100">
+                                <p className="text-sm font-medium text-stone-900 truncate">{user.name}</p>
+                                <p className="text-xs text-stone-500 truncate">{user.email}</p>
+                            </div>
+                            
+                            {user.role === 'admin' && (
+                                <button 
+                                    onClick={() => { onOpenAdmin(); setIsProfileOpen(false); }}
+                                    className="w-full text-left px-4 py-2 text-sm text-stone-700 hover:bg-stone-50 flex items-center gap-2"
+                                >
+                                    <LayoutDashboard size={16} /> Admin Dashboard
+                                </button>
+                            )}
+                            
+                            {user.role === 'customer' && (
+                                <button 
+                                    onClick={() => { onOpenHistory(); setIsProfileOpen(false); }}
+                                    className="w-full text-left px-4 py-2 text-sm text-stone-700 hover:bg-stone-50 flex items-center gap-2"
+                                >
+                                    <History size={16} /> Order History
+                                </button>
+                            )}
+
+                            <button 
+                                onClick={() => { onLogout(); setIsProfileOpen(false); }}
+                                className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-stone-50 flex items-center gap-2"
+                            >
+                                <LogOut size={16} /> Sign out
+                            </button>
+                        </div>
+                    </>
+                )}
+            </div>
+
             <button 
               onClick={onOpenCart}
               className="relative p-2 text-stone-600 hover:text-black transition-colors"

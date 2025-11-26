@@ -26,10 +26,20 @@ export enum PaymentStatus {
 export interface Order {
   id: string;
   date: string;
+  userEmail: string; // Added to link order to user
   items: CartItem[];
   total: number;
-  status: 'Verified' | 'Pending';
+  status: 'Verified' | 'Pending' | 'Shipped' | 'Cancelled';
   receiptSummary?: string;
   shippingMethod?: string;
   shippingCost?: number;
+}
+
+export type UserRole = 'customer' | 'admin';
+
+export interface User {
+  email: string;
+  name: string;
+  role: UserRole;
+  avatar?: string;
 }

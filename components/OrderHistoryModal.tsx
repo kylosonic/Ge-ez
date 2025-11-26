@@ -1,27 +1,33 @@
 import React, { useEffect, useState } from 'react';
 import { X, Package, Calendar, Truck } from 'lucide-react';
-import { Order } from '../types';
+import { Order, User } from '../types';
 
 interface OrderHistoryModalProps {
   isOpen: boolean;
   onClose: () => void;
+  user: User | null;
 }
 
-export const OrderHistoryModal: React.FC<OrderHistoryModalProps> = ({ isOpen, onClose }) => {
+export const OrderHistoryModal: React.FC<OrderHistoryModalProps> = ({ isOpen, onClose, user }) => {
   const [orders, setOrders] = useState<Order[]>([]);
 
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && user) {
       const stored = localStorage.getItem('stylehive_orders');
       if (stored) {
         try {
-          setOrders(JSON.parse(stored));
+          const allOrders = JSON.parse(stored) as Order[];
+          // Filter orders for this user
+          const userOrders = allOrders.filter(o => o.userEmail === user.email);
+          setOrders(userOrders);
         } catch (e) {
           console.error("Failed to parse orders", e);
         }
       }
+    } else {
+        setOrders([]);
     }
-  }, [isOpen]);
+  }, [isOpen, user]);
 
   if (!isOpen) return null;
 
@@ -34,7 +40,9 @@ export const OrderHistoryModal: React.FC<OrderHistoryModalProps> = ({ isOpen, on
           <div className="flex flex-col h-full bg-white shadow-xl">
              {/* Header */}
              <div className="flex items-center justify-between px-4 py-6 sm:px-6 border-b border-stone-200">
-                <h2 className="text-lg font-medium text-stone-900 font-serif">Order History</h2>
+                <h2 className="text-lg font-medium text-stone-900 font-serif">
+                    {user ? `Orders for ${user.name}` : 'Order History'}
+                </h2>
                 <button type="button" className="-m-2 p-2 text-stone-400 hover:text-stone-500" onClick={onClose}>
                   <X size={24} />
                 </button>
@@ -42,7 +50,11 @@ export const OrderHistoryModal: React.FC<OrderHistoryModalProps> = ({ isOpen, on
 
              {/* Content */}
              <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
-                {orders.length === 0 ? (
+                {!user ? (
+                    <div className="text-center py-12 text-stone-500">
+                        <p>Please sign in to view your order history.</p>
+                    </div>
+                ) : orders.length === 0 ? (
                     <div className="text-center py-12 text-stone-500">
                         <Package className="mx-auto h-12 w-12 text-stone-300 mb-3" />
                         <p>No orders found.</p>
