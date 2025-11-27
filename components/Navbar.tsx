@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShoppingBag, Search, Menu, User, LogOut, LayoutDashboard, History } from 'lucide-react';
+import { ShoppingBag, Search, Menu, User, LogOut, LayoutDashboard, History, X } from 'lucide-react';
 import { CartItem, User as UserType } from '../types';
 
 interface NavbarProps {
@@ -28,17 +28,26 @@ export const Navbar: React.FC<NavbarProps> = ({
     onOpenAdmin
 }) => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // New State
   const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+
+  const handleMobileCategoryClick = (category: string) => {
+    onSelectCategory(category);
+    setIsMobileMenuOpen(false);
+  };
 
   return (
     <nav className="sticky top-0 z-40 w-full bg-stone-50/90 backdrop-blur-md border-b border-stone-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           
-          {/* Mobile Menu & Logo */}
+          {/* Mobile Menu Button (Fixed) */}
           <div className="flex items-center gap-4">
-            <button className="p-2 -ml-2 text-stone-600 hover:text-black md:hidden">
-              <Menu size={24} />
+            <button 
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="p-2 -ml-2 text-stone-600 hover:text-black md:hidden"
+            >
+              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
             <a href="#" onClick={(e) => { e.preventDefault(); onSelectCategory('All'); }} className="text-2xl font-bold tracking-tight text-stone-900 font-serif">
               GE'EZ SHIRTS
@@ -91,7 +100,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     </button>
                 )}
 
-                {/* Dropdown Menu */}
+                {/* Desktop Dropdown Menu */}
                 {isProfileOpen && user && (
                     <>
                         <div className="fixed inset-0 z-10" onClick={() => setIsProfileOpen(false)} />
@@ -100,29 +109,17 @@ export const Navbar: React.FC<NavbarProps> = ({
                                 <p className="text-sm font-medium text-stone-900 truncate">{user.name}</p>
                                 <p className="text-xs text-stone-500 truncate">{user.email}</p>
                             </div>
-                            
                             {user.role === 'admin' && (
-                                <button 
-                                    onClick={() => { onOpenAdmin(); setIsProfileOpen(false); }}
-                                    className="w-full text-left px-4 py-2 text-sm text-stone-700 hover:bg-stone-50 flex items-center gap-2"
-                                >
+                                <button onClick={() => { onOpenAdmin(); setIsProfileOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-stone-700 hover:bg-stone-50 flex items-center gap-2">
                                     <LayoutDashboard size={16} /> Admin Dashboard
                                 </button>
                             )}
-                            
                             {user.role === 'customer' && (
-                                <button 
-                                    onClick={() => { onOpenHistory(); setIsProfileOpen(false); }}
-                                    className="w-full text-left px-4 py-2 text-sm text-stone-700 hover:bg-stone-50 flex items-center gap-2"
-                                >
+                                <button onClick={() => { onOpenHistory(); setIsProfileOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-stone-700 hover:bg-stone-50 flex items-center gap-2">
                                     <History size={16} /> Order History
                                 </button>
                             )}
-
-                            <button 
-                                onClick={() => { onLogout(); setIsProfileOpen(false); }}
-                                className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-stone-50 flex items-center gap-2"
-                            >
+                            <button onClick={() => { onLogout(); setIsProfileOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-stone-50 flex items-center gap-2">
                                 <LogOut size={16} /> Sign out
                             </button>
                         </div>
@@ -144,6 +141,25 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
         </div>
       </div>
+
+      {/* Mobile Menu Dropdown (New) */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden border-t border-stone-200 bg-white">
+          <div className="space-y-1 px-4 pb-3 pt-2">
+             {NAV_CATEGORIES.map((item) => (
+                <button
+                  key={item}
+                  onClick={() => handleMobileCategoryClick(item)}
+                  className={`block w-full text-left py-2 px-3 text-base font-medium rounded-md ${
+                    activeCategory === item ? 'bg-stone-100 text-stone-900' : 'text-stone-600 hover:bg-stone-50 hover:text-stone-900'
+                  }`}
+                >
+                  {item}
+                </button>
+             ))}
+          </div>
+        </div>
+      )}
     </nav>
   );
 };
