@@ -34,13 +34,17 @@ export const Hero: React.FC<HeroProps> = ({ onSelectCategory }) => {
           <main className="mt-10 mx-auto max-w-7xl sm:mt-12 md:mt-16 lg:mt-20 xl:mt-28">
             <div className="sm:text-center lg:text-left">
               <h1 className="text-4xl tracking-tight font-bold text-stone-900 sm:text-5xl md:text-6xl font-serif">
-                <span className="block xl:inline">Unleash Your Style</span>{' '}
-                <span className="block text-stone-600 xl:inline">Shop the Latest Trends</span>
+                <span className="block xl:inline">GEEZ MADE IN ETHIOPIA</span>{' '}
+                <span className="block text-stone-600 xl:inline">Wear Your Heritage</span>
               </h1>
-              <p className="mt-3 text-base text-stone-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
-                Discover the latest trends & express your style effortlessly. Shop exclusive collections with premium designs, just for you.
-              </p>
-              <div className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start gap-4">
+              <div className="mt-3 text-base text-stone-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
+                <p className="mb-4">
+                  Welcome to GEEZ MADE IN ETHIOPIA, where ancient aesthetics meet modern apparel.
+                  We are a cultural cloth store dedicated to reviving and blending Ethiopian traditions with contemporary design. We transform the rich narratives and forgotten symbols of Ethiopia into wearable art—stylish T-shirts that tell a powerful story.
+                </p>
+              </div>
+              
+              <div className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start gap-4 mb-10">
                 <div className="rounded-md shadow">
                   <a 
                     href="#shopping-grid" 
@@ -62,16 +66,25 @@ export const Hero: React.FC<HeroProps> = ({ onSelectCategory }) => {
               </div>
             </div>
             
-            <div className="mt-10 flex gap-8 items-center text-stone-500 text-sm">
-                <div>
-                    <span className="block text-2xl font-bold text-stone-900">25K+</span>
-                    <span>Happy Customers</span>
-                </div>
-                <div className="h-8 w-px bg-stone-300"></div>
-                <div>
-                    <span className="block text-2xl font-bold text-stone-900">100+</span>
-                    <span>New Arrivals</span>
-                </div>
+            <div className="mt-8 border-t border-stone-200 pt-6">
+                <h3 className="text-lg font-bold text-stone-900 font-serif mb-4">Why Choose GEEZ?</h3>
+                <ul className="space-y-4 text-sm text-stone-600">
+                    <li className="flex flex-col sm:flex-row gap-1 sm:gap-2">
+                        <span className="font-bold text-stone-900 min-w-fit">Ethiopian Essence:</span>
+                        <span>Designs rooted in authentic motifs symbolizing prosperity, community, and pride.</span>
+                    </li>
+                    <li className="flex flex-col sm:flex-row gap-1 sm:gap-2">
+                         <span className="font-bold text-stone-900 min-w-fit">Premium Quality:</span>
+                         <span>Imported, 100% Cotton shirts utilizing advanced printing techniques, including our signature DTF printing, for vibrant, lasting results.</span>
+                    </li>
+                     <li className="flex flex-col sm:flex-row gap-1 sm:gap-2">
+                         <span className="font-bold text-stone-900 min-w-fit">Customization:</span>
+                         <span>Design your own piece or choose from our curated collections to create a stylish, empowered, and comfortable cultural statement.</span>
+                    </li>
+                </ul>
+                <p className="mt-8 text-stone-900 font-serif italic font-medium text-lg">
+                    "Reborn traditions. Redefined style."
+                </p>
             </div>
 
           </main>

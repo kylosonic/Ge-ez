@@ -28,7 +28,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     onOpenAdmin
 }) => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // New State
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
   const handleMobileCategoryClick = (category: string) => {
@@ -41,7 +41,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           
-          {/* Mobile Menu Button (Fixed) */}
+          {/* Mobile Menu Button */}
           <div className="flex items-center gap-4">
             <button 
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -49,8 +49,8 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
-            <a href="#" onClick={(e) => { e.preventDefault(); onSelectCategory('All'); }} className="text-2xl font-bold tracking-tight text-stone-900 font-serif">
-              GE'EZ SHIRTS
+            <a href="#" onClick={(e) => { e.preventDefault(); onSelectCategory('All'); }} className="text-xl sm:text-2xl font-bold tracking-tight text-stone-900 font-serif">
+              GEEZ MADE IN ETHIOPIA
             </a>
           </div>
 
@@ -142,7 +142,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
       </div>
 
-      {/* Mobile Menu Dropdown (New) */}
+      {/* Mobile Menu Dropdown */}
       {isMobileMenuOpen && (
         <div className="md:hidden border-t border-stone-200 bg-white">
           <div className="space-y-1 px-4 pb-3 pt-2">
