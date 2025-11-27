@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
+import { StoreShowcase } from './components/StoreShowcase';
 import { ProductGrid } from './components/ProductGrid';
 import { Cart } from './components/Cart';
 import { CheckoutModal } from './components/CheckoutModal';
@@ -56,15 +57,13 @@ export default function App() {
     setIsAdminOpen(false);
   };
 
-  // UPDATED: Precise scrolling logic
+  // Precise scrolling logic
   const handleCategorySelect = (category: string) => {
     setSelectedCategory(category);
-    // Wait for state to update, then scroll
     setTimeout(() => {
-        // We target 'shopping-grid' to land exactly on the products, skipping the Lookbook
         const element = document.getElementById('shopping-grid');
         if (element) {
-            const headerOffset = 100; // Navbar height + extra padding
+            const headerOffset = 100;
             const elementPosition = element.getBoundingClientRect().top;
             const offsetPosition = elementPosition + window.scrollY - headerOffset;
             
@@ -103,6 +102,9 @@ export default function App() {
       />
       <main>
         <Hero onSelectCategory={handleCategorySelect} />
+        
+        {/* New Store Showcase Section */}
+        <StoreShowcase />
         
         <ProductGrid 
           products={products} 
