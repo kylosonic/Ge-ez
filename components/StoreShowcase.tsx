@@ -1,5 +1,10 @@
 import React from 'react';
 import { MapPin, Clock, Phone } from 'lucide-react';
+// Importing images directly from the assets folder
+import storeEntranceImg from '../assets/IMG_7158.JPG';
+import brandingWallImg from '../assets/IMG_7160.JPG';
+import clothingRacksImg from '../assets/IMG_7159.JPG';
+import storeMirrorImg from '../assets/IMG_7161.JPG';
 
 export const StoreShowcase: React.FC = () => {
   return (
@@ -49,16 +54,12 @@ export const StoreShowcase: React.FC = () => {
             </div>
           </div>
 
-          {/* Feature Image (Vertical Neon Sign) */}
+          {/* Feature Image (Vertical Neon Sign - IMG_7158) */}
           <div className="relative h-[500px] rounded-2xl overflow-hidden shadow-2xl group">
-             {/* Note: Ensure IMG_7158.jpg is in public/store/ */}
              <img 
-               src="/store/IMG_7158.jpg" 
+               src={storeEntranceImg} 
                alt="Ge'ez Store Entrance Neon" 
                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-               onError={(e) => {
-                   (e.target as HTMLImageElement).src = 'https://picsum.photos/800/1200?random=store1';
-               }}
              />
              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
              <div className="absolute bottom-6 left-6">
@@ -73,12 +74,9 @@ export const StoreShowcase: React.FC = () => {
             {/* Branding Wall (IMG_7160) */}
             <div className="relative rounded-xl overflow-hidden group h-64 md:h-full lg:col-span-2">
                 <img 
-                    src="/store/IMG_7160.jpg" 
+                    src={brandingWallImg} 
                     alt="Timeless Trends Branding" 
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    onError={(e) => {
-                        (e.target as HTMLImageElement).src = 'https://picsum.photos/800/600?random=store2';
-                    }}
                 />
                 <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
             </div>
@@ -86,24 +84,18 @@ export const StoreShowcase: React.FC = () => {
             {/* Merchandise Racks (IMG_7159) */}
             <div className="relative rounded-xl overflow-hidden group h-64 md:h-full">
                 <img 
-                    src="/store/IMG_7159.jpg" 
+                    src={clothingRacksImg} 
                     alt="Clothing Racks" 
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    onError={(e) => {
-                        (e.target as HTMLImageElement).src = 'https://picsum.photos/400/600?random=store3';
-                    }}
                 />
             </div>
 
             {/* Mirror/Vibe (IMG_7161) */}
             <div className="relative rounded-xl overflow-hidden group h-64 md:h-full">
                 <img 
-                    src="/store/IMG_7161.jpg" 
+                    src={storeMirrorImg} 
                     alt="Store Interior Mirror" 
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    onError={(e) => {
-                        (e.target as HTMLImageElement).src = 'https://picsum.photos/400/600?random=store4';
-                    }}
                 />
             </div>
         </div>
