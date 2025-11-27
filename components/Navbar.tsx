@@ -41,7 +41,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <Menu size={24} />
             </button>
             <a href="#" onClick={(e) => { e.preventDefault(); onSelectCategory('All'); }} className="text-2xl font-bold tracking-tight text-stone-900 font-serif">
-              STYLEHIVE
+              GE'EZ SHIRTS
             </a>
           </div>
 

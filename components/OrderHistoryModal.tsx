@@ -85,11 +85,13 @@ export const OrderHistoryModal: React.FC<OrderHistoryModalProps> = ({ isOpen, on
                                   
                                   <div className="space-y-3 mb-4">
                                       {order.items.map((item, idx) => (
-                                          <div key={idx} className="flex gap-3">
-                                              <img src={item.image} alt={item.name} className="h-12 w-12 rounded object-cover bg-stone-200" />
+                                          <div key={idx} className="flex gap-3 items-start">
+                                              <img src={item.image} alt={item.name} className="h-12 w-12 rounded object-cover bg-stone-200 border border-stone-100" />
                                               <div className="flex-1 min-w-0">
                                                   <p className="text-sm font-medium text-stone-900 truncate">{item.name}</p>
-                                                  <p className="text-xs text-stone-500">Qty: {item.quantity}</p>
+                                                  <p className="text-xs text-stone-500 mt-0.5">
+                                                    Qty: {item.quantity} <span className="mx-1 text-stone-300">|</span> ${item.price.toFixed(2)} each
+                                                  </p>
                                               </div>
                                               <p className="text-sm font-medium text-stone-900">${(item.price * item.quantity).toFixed(2)}</p>
                                           </div>

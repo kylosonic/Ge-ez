@@ -7,6 +7,7 @@ import { CheckoutModal } from './components/CheckoutModal';
 import { OrderHistoryModal } from './components/OrderHistoryModal';
 import { AuthModal } from './components/AuthModal';
 import { AdminDashboard } from './components/AdminDashboard';
+import { ProductDetailModal } from './components/ProductDetailModal';
 import { Product, CartItem, User, Order } from './types';
 
 // Mock Data Initializer
@@ -32,6 +33,7 @@ export default function App() {
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   
   // App State
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
@@ -85,6 +87,10 @@ export default function App() {
     }, 50);
   };
 
+  const handleProductClick = (product: Product) => {
+      setSelectedProduct(product);
+  };
+
   const handleAddToCart = (product: Product) => {
     setCartItems(prev => {
       const existing = prev.find(item => item.id === product.id);
@@ -100,6 +106,16 @@ export default function App() {
 
   const handleRemoveFromCart = (id: number) => {
     setCartItems(prev => prev.filter(item => item.id !== id));
+  };
+
+  const handleUpdateQuantity = (id: number, quantity: number) => {
+    if (quantity < 1) {
+        // Option: could confirm removal or just do nothing
+        return; 
+    }
+    setCartItems(prev => prev.map(item => 
+        item.id === id ? { ...item, quantity } : item
+    ));
   };
 
   const handleOpenCheckout = () => {
@@ -137,6 +153,11 @@ export default function App() {
 
   const cartTotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
+  // Filter related products
+  const relatedProducts = selectedProduct 
+    ? products.filter(p => p.category === selectedProduct.category && p.id !== selectedProduct.id).slice(0, 4)
+    : [];
+
   return (
     <div className="min-h-screen bg-stone-50 text-stone-900 font-sans selection:bg-stone-200">
       <Navbar 
@@ -156,6 +177,7 @@ export default function App() {
         <ProductGrid 
           products={products} 
           onAddToCart={handleAddToCart}
+          onProductClick={handleProductClick}
           selectedCategory={selectedCategory}
           onSelectCategory={handleCategorySelect}
         />
@@ -210,6 +232,7 @@ export default function App() {
         onClose={() => setIsCartOpen(false)} 
         cartItems={cartItems} 
         onRemoveItem={handleRemoveFromCart}
+        onUpdateQuantity={handleUpdateQuantity}
         onCheckout={handleOpenCheckout}
       />
 
@@ -227,6 +250,15 @@ export default function App() {
         isOpen={isHistoryOpen}
         onClose={() => setIsHistoryOpen(false)}
         user={user}
+      />
+
+      <ProductDetailModal
+        isOpen={!!selectedProduct}
+        onClose={() => setSelectedProduct(null)}
+        product={selectedProduct}
+        relatedProducts={relatedProducts}
+        onAddToCart={handleAddToCart}
+        onSelectProduct={setSelectedProduct}
       />
 
       <AuthModal 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Product, Order } from '../types';
-import { Plus, Trash2, Package, Check, Truck, XCircle, Search } from 'lucide-react';
+import { Plus, Trash2, Package, Check, Truck, XCircle, Search, Filter, Upload, ArrowUpDown } from 'lucide-react';
 
 interface AdminDashboardProps {
   isOpen: boolean;
@@ -23,36 +23,94 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<'orders' | 'products'>('orders');
   
+  // Order Filter State
+  const [filterStatus, setFilterStatus] = useState<string>('All');
+
+  // Product Sort State
+  const [sortOrder, setSortOrder] = useState<'default' | 'asc' | 'desc'>('default');
+
   // Product Form State
   const [isAddingProduct, setIsAddingProduct] = useState(false);
   const [newProduct, setNewProduct] = useState<Partial<Product>>({
     name: '',
     price: 0,
     category: 'Shirts',
-    image: 'https://picsum.photos/400/500?random=' + Math.floor(Math.random() * 1000)
+    image: ''
   });
 
   if (!isOpen) return null;
 
+  const handleImageFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          
+          // Resize logic to keep localStorage usage low
+          const MAX_WIDTH = 500;
+          const MAX_HEIGHT = 600;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height) {
+            if (width > MAX_WIDTH) {
+              height *= MAX_WIDTH / width;
+              width = MAX_WIDTH;
+            }
+          } else {
+            if (height > MAX_HEIGHT) {
+              width *= MAX_HEIGHT / height;
+              height = MAX_HEIGHT;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          ctx?.drawImage(img, 0, 0, width, height);
+          
+          // Compress to JPEG 0.8 quality
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+          setNewProduct(prev => ({ ...prev, image: dataUrl }));
+        };
+        img.src = event.target?.result as string;
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleProductSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (newProduct.name && newProduct.price) {
+    if (newProduct.name && newProduct.price && newProduct.image) {
       onAddProduct({
         id: Date.now(),
         name: newProduct.name,
         price: Number(newProduct.price),
         category: newProduct.category || 'Shirts',
-        image: newProduct.image || 'https://picsum.photos/400/500'
+        image: newProduct.image
       });
       setIsAddingProduct(false);
       setNewProduct({
         name: '',
         price: 0,
         category: 'Shirts',
-        image: 'https://picsum.photos/400/500?random=' + Math.floor(Math.random() * 1000)
+        image: ''
       });
     }
   };
+
+  const filteredOrders = orders.filter(order => 
+    filterStatus === 'All' ? true : order.status === filterStatus
+  );
+
+  const sortedProducts = [...products].sort((a, b) => {
+    if (sortOrder === 'asc') return a.price - b.price;
+    if (sortOrder === 'desc') return b.price - a.price;
+    return 0;
+  });
 
   return (
     <div className="fixed inset-0 z-50 bg-stone-100 overflow-y-auto">
@@ -61,7 +119,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         <header className="bg-stone-900 text-white shadow-md sticky top-0 z-10">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div className="flex items-center gap-2">
-                <span className="font-serif font-bold text-xl">StyleHive</span>
+                <span className="font-serif font-bold text-xl">Ge'ez Shirts</span>
                 <span className="bg-stone-700 text-xs px-2 py-0.5 rounded text-stone-200">Admin</span>
             </div>
             <div className="flex items-center gap-4">
@@ -88,7 +146,25 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           
           {activeTab === 'orders' && (
             <div>
-               <h2 className="text-2xl font-bold text-stone-900 font-serif mb-6">Order Management</h2>
+               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                   <h2 className="text-2xl font-bold text-stone-900 font-serif">Order Management</h2>
+                   
+                   <div className="flex items-center gap-2">
+                       <Filter size={18} className="text-stone-500" />
+                       <select 
+                           value={filterStatus}
+                           onChange={(e) => setFilterStatus(e.target.value)}
+                           className="block rounded-md border-stone-300 shadow-sm border p-2 focus:ring-stone-500 focus:border-stone-500 text-sm bg-white"
+                       >
+                           <option value="All">All Statuses</option>
+                           <option value="Pending">Pending</option>
+                           <option value="Verified">Verified</option>
+                           <option value="Shipped">Shipped</option>
+                           <option value="Cancelled">Cancelled</option>
+                       </select>
+                   </div>
+               </div>
+
                <div className="bg-white rounded-lg shadow overflow-hidden">
                   <div className="overflow-x-auto">
                     <table className="min-w-full divide-y divide-stone-200">
@@ -103,12 +179,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         </tr>
                       </thead>
                       <tbody className="bg-white divide-y divide-stone-200">
-                        {orders.length === 0 ? (
+                        {filteredOrders.length === 0 ? (
                             <tr>
-                                <td colSpan={6} className="px-6 py-12 text-center text-stone-500">No orders found.</td>
+                                <td colSpan={6} className="px-6 py-12 text-center text-stone-500">
+                                    {orders.length === 0 ? "No orders found." : "No orders match the selected filter."}
+                                </td>
                             </tr>
                         ) : (
-                            orders.map((order) => (
+                            filteredOrders.map((order) => (
                             <tr key={order.id}>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-stone-900">#{order.id.slice(-6)}</td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-stone-500">{order.userEmail}</td>
@@ -147,14 +225,28 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
           {activeTab === 'products' && (
             <div>
-                <div className="flex justify-between items-center mb-6">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
                     <h2 className="text-2xl font-bold text-stone-900 font-serif">Product Management</h2>
-                    <button 
-                        onClick={() => setIsAddingProduct(true)}
-                        className="flex items-center gap-2 bg-stone-900 text-white px-4 py-2 rounded-md hover:bg-stone-800 transition-colors"
-                    >
-                        <Plus size={18} /> Add Product
-                    </button>
+                    <div className="flex flex-wrap gap-3">
+                        <div className="flex items-center gap-2 bg-white rounded-md border border-stone-300 px-3 py-2 shadow-sm">
+                            <ArrowUpDown size={16} className="text-stone-500" />
+                            <select 
+                                value={sortOrder}
+                                onChange={(e) => setSortOrder(e.target.value as 'default' | 'asc' | 'desc')}
+                                className="bg-transparent border-none text-sm text-stone-700 focus:ring-0 cursor-pointer outline-none pr-8"
+                            >
+                                <option value="default">Default Sort</option>
+                                <option value="asc">Price: Low to High</option>
+                                <option value="desc">Price: High to Low</option>
+                            </select>
+                        </div>
+                        <button 
+                            onClick={() => setIsAddingProduct(true)}
+                            className="flex items-center gap-2 bg-stone-900 text-white px-4 py-2 rounded-md hover:bg-stone-800 transition-colors"
+                        >
+                            <Plus size={18} /> Add Product
+                        </button>
+                    </div>
                 </div>
 
                 {isAddingProduct && (
@@ -198,15 +290,44 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                     <option value="Coats">Coats</option>
                                 </select>
                             </div>
+                            
+                            {/* Image Upload */}
                             <div>
-                                <label className="block text-sm font-medium text-stone-700">Image URL</label>
-                                <input 
-                                    type="text" 
-                                    className="mt-1 block w-full rounded-md border-stone-300 shadow-sm border p-2 focus:ring-stone-500 focus:border-stone-500" 
-                                    value={newProduct.image}
-                                    onChange={e => setNewProduct({...newProduct, image: e.target.value})}
-                                />
+                                <label className="block text-sm font-medium text-stone-700">Product Image</label>
+                                <div className="mt-1 flex items-center gap-4">
+                                    {newProduct.image ? (
+                                        <div className="relative">
+                                            <img src={newProduct.image} alt="Preview" className="h-16 w-16 object-cover rounded-md border border-stone-200" />
+                                            <button 
+                                                type="button"
+                                                onClick={() => setNewProduct(prev => ({ ...prev, image: '' }))}
+                                                className="absolute -top-2 -right-2 bg-white rounded-full p-0.5 shadow-md border border-stone-200 text-stone-500 hover:text-red-500"
+                                            >
+                                                <XCircle size={14} />
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        <div className="h-16 w-16 bg-stone-100 rounded-md border border-dashed border-stone-300 flex items-center justify-center text-stone-400">
+                                            <Package size={20} />
+                                        </div>
+                                    )}
+                                    <div className="flex-1">
+                                        <label htmlFor="product-image-upload" className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 border border-stone-300 rounded-md shadow-sm text-sm font-medium text-stone-700 bg-white hover:bg-stone-50">
+                                            <Upload size={16} />
+                                            <span>Upload Image</span>
+                                            <input 
+                                                id="product-image-upload"
+                                                type="file" 
+                                                accept="image/*"
+                                                onChange={handleImageFileChange}
+                                                className="sr-only"
+                                            />
+                                        </label>
+                                        <p className="text-xs text-stone-500 mt-1">Recommended: JPG/PNG, max 5MB</p>
+                                    </div>
+                                </div>
                             </div>
+
                             <div className="md:col-span-2 flex justify-end gap-2 mt-2">
                                 <button 
                                     type="button" 
@@ -217,7 +338,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                 </button>
                                 <button 
                                     type="submit" 
-                                    className="px-4 py-2 bg-stone-900 text-white rounded-md hover:bg-stone-800"
+                                    className="px-4 py-2 bg-stone-900 text-white rounded-md hover:bg-stone-800 disabled:opacity-50"
+                                    disabled={!newProduct.name || !newProduct.price || !newProduct.image}
                                 >
                                     Save Product
                                 </button>
@@ -227,7 +349,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 )}
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {products.map(product => (
+                    {sortedProducts.map(product => (
                         <div key={product.id} className="bg-white rounded-lg shadow overflow-hidden group">
                             <div className="relative h-48">
                                 <img src={product.image} alt={product.name} className="w-full h-full object-cover" />

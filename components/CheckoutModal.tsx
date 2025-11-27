@@ -1,21 +1,22 @@
-import React, { useState, useRef } from 'react';
-import { X, Upload, CheckCircle, AlertCircle, Loader2, Smartphone, FileImage, Clock, ChevronRight, ChevronLeft } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { X, Upload, CheckCircle, AlertCircle, Loader2, Smartphone, FileImage, Clock, ChevronRight, ChevronLeft, Mail } from 'lucide-react';
 import { analyzeReceipt } from '../services/geminiService';
+import { sendConfirmationEmail } from '../services/emailService';
 import { PaymentStatus, CartItem, Order, User } from '../types';
 
 interface CheckoutModalProps {
   isOpen: boolean;
   onClose: () => void;
   cartItems: CartItem[];
-  totalAmount: number; // This is the subtotal
+  totalAmount: number;
   onPaymentSuccess: () => void;
   user: User | null;
   onOpenLogin: () => void;
 }
 
 const SHIPPING_OPTIONS = [
-  { id: 'standard', name: 'Standard Shipping', price: 5.99, duration: '5-7 business days' },
-  { id: 'express', name: 'Express Shipping', price: 14.99, duration: '1-2 business days' },
+  { id: 'standard', name: 'Standard Shipping', price: 5.99, minDays: 5, maxDays: 7 },
+  { id: 'expedited', name: 'Expedited Shipping', price: 14.99, minDays: 2, maxDays: 3 },
 ];
 
 const STEPS = [
@@ -35,22 +36,69 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
 }) => {
   const [step, setStep] = useState(1);
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [guestEmail, setGuestEmail] = useState('');
   const [receiptFile, setReceiptFile] = useState<File | null>(null);
   const [status, setStatus] = useState<PaymentStatus>(PaymentStatus.IDLE);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [aiSummary, setAiSummary] = useState<string>('');
   const [selectedShippingId, setSelectedShippingId] = useState<string>(SHIPPING_OPTIONS[0].id);
+  const [progress, setProgress] = useState(0);
+  const [currentOrderId, setCurrentOrderId] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Reset state and generate new Order ID when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setCurrentOrderId(Date.now().toString());
+      setStep(1);
+      setStatus(PaymentStatus.IDLE);
+      setErrorMessage('');
+      setAiSummary('');
+      setProgress(0);
+      setReceiptFile(null);
+      setGuestEmail('');
+      // We keep phone number/shipping selection as a convenience or could reset them too
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    let interval: ReturnType<typeof setInterval>;
+    if (status === PaymentStatus.ANALYZING) {
+      setProgress(0);
+      interval = setInterval(() => {
+        setProgress((prev) => {
+           if (prev >= 90) return prev;
+           
+           // Fast initial progress (upload simulation), then slower (analysis)
+           // Threshold at 40% for visual switch
+           const increment = prev < 40 ? 5 : 1; 
+           const randomJitter = Math.random() * 2;
+           
+           return Math.min(prev + increment + randomJitter, 90);
+        });
+      }, 200);
+    } else if (status === PaymentStatus.SUCCESS) {
+      setProgress(100);
+    } else {
+      setProgress(0);
+    }
+    return () => clearInterval(interval);
+  }, [status]);
 
   if (!isOpen) return null;
 
-  // Ensure user is logged in before proceeding too far? 
-  // For this store, let's say guest checkout is allowed but we prompt login.
-  // Actually, let's require login for simplicity in tracking or just fallback to guest email if we had an input.
-  // Given the request, we'll use the user.email if logged in, otherwise 'guest'.
-
   const selectedShipping = SHIPPING_OPTIONS.find(opt => opt.id === selectedShippingId) || SHIPPING_OPTIONS[0];
   const finalTotal = totalAmount + selectedShipping.price;
+
+  const getEstimatedDelivery = (minDays: number, maxDays: number) => {
+    const today = new Date();
+    const minDate = new Date(today);
+    minDate.setDate(today.getDate() + minDays);
+    const maxDate = new Date(today);
+    maxDate.setDate(today.getDate() + maxDays);
+    
+    return `${minDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - ${maxDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -73,8 +121,10 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   };
 
   const handleSubmit = async () => {
-    if (!phoneNumber || !receiptFile) {
-      setErrorMessage("Please provide both phone number and receipt.");
+    const emailToUse = user?.email || guestEmail;
+
+    if (!phoneNumber || !receiptFile || !emailToUse) {
+      setErrorMessage("Please provide all required fields including receipt.");
       return;
     }
 
@@ -88,9 +138,9 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
         setAiSummary(analysis.summary);
         
         const newOrder: Order = {
-          id: Date.now().toString(),
+          id: currentOrderId,
           date: new Date().toISOString(),
-          userEmail: user?.email || 'guest@stylehive.com',
+          userEmail: emailToUse,
           items: cartItems,
           total: finalTotal,
           status: 'Verified',
@@ -98,6 +148,9 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
           shippingMethod: selectedShipping.name,
           shippingCost: selectedShipping.price
         };
+
+        // Send confirmation email
+        await sendConfirmationEmail(newOrder);
 
         const existingOrders = JSON.parse(localStorage.getItem('stylehive_orders') || '[]');
         localStorage.setItem('stylehive_orders', JSON.stringify([newOrder, ...existingOrders]));
@@ -110,6 +163,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
         setStatus(PaymentStatus.ERROR);
       }
     } catch (error) {
+      console.error(error);
       setErrorMessage("An error occurred during verification. Please try again.");
       setStatus(PaymentStatus.ERROR);
     }
@@ -118,8 +172,9 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const handleNext = () => {
     setErrorMessage('');
     if (step === 2) {
-      if (!phoneNumber || !receiptFile) {
-        setErrorMessage("Please enter your phone number and upload the receipt to continue.");
+      const emailToUse = user?.email || guestEmail;
+      if (!phoneNumber || !receiptFile || !emailToUse) {
+        setErrorMessage("Please complete all fields and upload the receipt to continue.");
         return;
       }
     }
@@ -132,7 +187,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   };
 
   const renderShippingStep = () => (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {!user && (
           <div className="bg-blue-50 p-3 rounded-md text-sm text-blue-700 mb-4 flex justify-between items-center">
              <span>Sign in to save this order to your account.</span>
@@ -140,43 +195,59 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
           </div>
       )}
 
-      <h4 className="text-lg font-medium text-stone-900">Select Shipping Method</h4>
-      <div className="grid grid-cols-1 gap-3">
-        {SHIPPING_OPTIONS.map((option) => (
-          <div 
-            key={option.id}
-            onClick={() => setSelectedShippingId(option.id)}
-            className={`relative flex cursor-pointer rounded-lg border p-4 shadow-sm focus:outline-none transition-colors ${
-              selectedShippingId === option.id 
-                ? 'border-stone-900 ring-1 ring-stone-900 bg-stone-50' 
-                : 'border-stone-200 bg-white hover:bg-stone-50'
-            }`}
-          >
-            <span className="flex flex-1">
-              <span className="flex flex-col">
-                <span className="block text-sm font-medium text-stone-900">{option.name}</span>
-                <span className="mt-1 flex items-center text-sm text-stone-500">
-                  <Clock size={12} className="mr-1" /> {option.duration}
-                </span>
-              </span>
-            </span>
-            <span className="mt-0.5 text-sm font-medium text-stone-900">+${option.price.toFixed(2)}</span>
-            <div className={`absolute top-4 right-4 h-4 w-4 rounded-full border flex items-center justify-center ${
-                 selectedShippingId === option.id ? 'border-stone-900' : 'border-stone-300'
-            }`}>
-                {selectedShippingId === option.id && <div className="h-2 w-2 rounded-full bg-stone-900" />}
+      <div>
+        <h4 className="text-lg font-medium text-stone-900 mb-3">Select Shipping Method</h4>
+        <div className="space-y-3">
+          {SHIPPING_OPTIONS.map((option) => (
+            <div 
+              key={option.id}
+              onClick={() => setSelectedShippingId(option.id)}
+              className={`relative flex items-center cursor-pointer rounded-lg border p-4 shadow-sm focus:outline-none transition-all ${
+                selectedShippingId === option.id 
+                  ? 'border-stone-900 ring-1 ring-stone-900 bg-stone-50' 
+                  : 'border-stone-200 bg-white hover:border-stone-300'
+              }`}
+            >
+              <div className={`h-4 w-4 rounded-full border mr-3 flex items-center justify-center flex-shrink-0 ${
+                   selectedShippingId === option.id ? 'border-stone-900' : 'border-stone-300'
+              }`}>
+                  {selectedShippingId === option.id && <div className="h-2 w-2 rounded-full bg-stone-900" />}
+              </div>
+              
+              <div className="flex-1">
+                 <div className="flex justify-between items-center">
+                    <div className="flex items-center gap-2">
+                        <span className="block text-sm font-medium text-stone-900">{option.name}</span>
+                        {option.id === 'expedited' && (
+                            <span className="inline-flex items-center rounded bg-stone-200 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-stone-800">
+                                Faster
+                            </span>
+                        )}
+                    </div>
+                    <span className="text-sm font-bold text-stone-900">+${option.price.toFixed(2)}</span>
+                 </div>
+                 <div className="flex items-center text-xs text-stone-500 mt-1">
+                    <Clock size={12} className="mr-1" />
+                    <span>Est. Delivery: <span className="text-stone-700 font-medium">{getEstimatedDelivery(option.minDays, option.maxDays)}</span></span>
+                 </div>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
-      <div className="bg-stone-50 p-4 rounded-md mt-4">
-          <div className="flex justify-between text-sm">
-            <span className="text-stone-600">Current Subtotal</span>
-            <span className="font-medium">${totalAmount.toFixed(2)}</span>
+
+      <div className="bg-stone-50 p-4 rounded-md border border-stone-100">
+          <div className="flex justify-between text-sm text-stone-600 mb-2">
+            <span>Subtotal</span>
+            <span>${totalAmount.toFixed(2)}</span>
           </div>
-          <div className="flex justify-between text-sm mt-2">
-            <span className="text-stone-600">Estimated Total</span>
-            <span className="font-bold text-stone-900">${finalTotal.toFixed(2)}</span>
+          <div className="flex justify-between text-sm text-stone-600 mb-2">
+            <span>Shipping</span>
+            <span>+${selectedShipping.price.toFixed(2)}</span>
+          </div>
+          <div className="border-t border-stone-200 pt-2 mt-2 flex justify-between text-base font-medium text-stone-900">
+            <span>Total</span>
+            <span>${finalTotal.toFixed(2)}</span>
           </div>
       </div>
     </div>
@@ -184,74 +255,130 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
   const renderPaymentStep = () => (
     <div className="space-y-6">
-       <div className="bg-stone-50 p-4 rounded-md border border-stone-200">
-          <h4 className="font-medium text-stone-900 mb-2 text-xs uppercase tracking-wider">Bank Transfer Details</h4>
-          <p className="text-sm text-stone-600 mb-1">Please transfer <span className="font-bold text-stone-900">${finalTotal.toFixed(2)}</span> to:</p>
-          <div className="bg-white p-3 rounded border border-stone-100 mt-2">
-              <p className="text-sm text-stone-600">Bank: <span className="font-semibold text-stone-900">StyleHive Global Bank</span></p>
-              <p className="text-sm text-stone-600">Account: <span className="font-semibold text-stone-900">1234-5678-9012</span></p>
-              <p className="text-sm text-stone-600">Ref: <span className="font-semibold text-stone-900">ORD-{Date.now().toString().slice(-6)}</span></p>
-          </div>
-      </div>
-
-      <div>
-          <label htmlFor="phone" className="block text-sm font-medium leading-6 text-stone-900">
-              Phone Number
-          </label>
-          <div className="relative mt-2 rounded-md shadow-sm">
-              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                  <Smartphone className="h-5 w-5 text-stone-400" aria-hidden="true" />
+       <div className="bg-stone-50 p-5 rounded-lg border border-stone-200 shadow-sm">
+          <h4 className="font-serif font-bold text-stone-900 mb-3 text-lg flex items-center gap-2">
+            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-stone-900 text-xs text-white">1</span>
+            Bank Transfer Instructions
+          </h4>
+          <p className="text-sm text-stone-600 mb-4 leading-relaxed">
+            To complete your order, please transfer the total amount of <span className="font-bold text-stone-900 text-base">${finalTotal.toFixed(2)}</span> to the bank account below.
+          </p>
+          
+          <div className="bg-white p-4 rounded-md border border-stone-200 space-y-3">
+              <div className="flex justify-between items-center border-b border-stone-100 pb-2">
+                  <span className="text-sm text-stone-500">Bank Name</span>
+                  <span className="font-semibold text-stone-900">Ge'ez Shirts Global Bank</span>
               </div>
-              <input
-                  type="tel"
-                  name="phone"
-                  id="phone"
-                  className="block w-full rounded-md border-0 py-2.5 pl-10 text-stone-900 ring-1 ring-inset ring-stone-300 placeholder:text-stone-400 focus:ring-2 focus:ring-inset focus:ring-stone-600 sm:text-sm sm:leading-6"
-                  placeholder="+1 (555) 987-6543"
-                  value={phoneNumber}
-                  onChange={(e) => setPhoneNumber(e.target.value)}
-                  required
-              />
+              <div className="flex justify-between items-center border-b border-stone-100 pb-2">
+                  <span className="text-sm text-stone-500">Account Number</span>
+                  <span className="font-semibold text-stone-900 font-mono text-base tracking-wide">1234-5678-9012</span>
+              </div>
+              <div className="flex justify-between items-center pt-1">
+                  <span className="text-sm text-stone-500">Reference / Memo</span>
+                  <span className="font-bold text-stone-900 bg-yellow-50 px-2 py-1 rounded border border-yellow-100 text-sm">ORD-{currentOrderId.slice(-6)}</span>
+              </div>
           </div>
+          <p className="text-xs text-stone-500 mt-3 flex items-start gap-1">
+            <AlertCircle size={14} className="mt-0.5 flex-shrink-0" />
+            <span>Important: Please include the Reference code in your transfer description so we can link your payment instantly.</span>
+          </p>
       </div>
 
       <div>
-          <label className="block text-sm font-medium leading-6 text-stone-900">
-              Upload Payment Receipt
-          </label>
-          <div 
-              className={`mt-2 flex justify-center rounded-lg border border-dashed border-stone-900/25 px-6 py-8 hover:bg-stone-50 transition-colors cursor-pointer ${receiptFile ? 'bg-stone-50 border-stone-400' : ''}`}
-              onClick={() => fileInputRef.current?.click()}
-          >
-              <div className="text-center">
-                  {receiptFile ? (
-                      <>
-                          <FileImage className="mx-auto h-10 w-10 text-stone-600" aria-hidden="true" />
-                          <div className="mt-2 flex text-sm leading-6 text-stone-600 justify-center">
-                              <span className="font-semibold text-stone-900">{receiptFile.name}</span>
-                          </div>
-                          <p className="text-xs text-stone-500 mt-1">Click to change file</p>
-                      </>
-                  ) : (
-                      <>
-                          <Upload className="mx-auto h-10 w-10 text-stone-300" aria-hidden="true" />
-                          <div className="mt-2 flex text-sm leading-6 text-stone-600 justify-center">
-                              <span className="relative cursor-pointer rounded-md font-semibold text-stone-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-stone-600 focus-within:ring-offset-2 hover:text-stone-500">
-                                  <span>Upload receipt</span>
-                              </span>
-                          </div>
-                          <p className="text-xs leading-5 text-stone-500">PNG, JPG up to 5MB</p>
-                      </>
-                  )}
-                  <input 
-                      ref={fileInputRef}
-                      id="file-upload" 
-                      name="file-upload" 
-                      type="file" 
-                      className="sr-only" 
-                      accept="image/*"
-                      onChange={handleFileChange}
-                  />
+          <h4 className="font-serif font-bold text-stone-900 mb-4 text-lg flex items-center gap-2">
+            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-stone-900 text-xs text-white">2</span>
+            Verification Details
+          </h4>
+
+          <div className="space-y-4">
+              {/* Guest Email Input */}
+              {!user && (
+                <div>
+                  <label htmlFor="guest-email" className="block text-sm font-medium leading-6 text-stone-900">
+                      Email Address
+                  </label>
+                  <div className="relative mt-2 rounded-md shadow-sm">
+                      <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                          <Mail className="h-5 w-5 text-stone-400" aria-hidden="true" />
+                      </div>
+                      <input
+                          type="email"
+                          name="guest-email"
+                          id="guest-email"
+                          className="block w-full rounded-md border-0 py-2.5 pl-10 text-stone-900 ring-1 ring-inset ring-stone-300 placeholder:text-stone-400 focus:ring-2 focus:ring-inset focus:ring-stone-600 sm:text-sm sm:leading-6"
+                          placeholder="you@example.com"
+                          value={guestEmail}
+                          onChange={(e) => setGuestEmail(e.target.value)}
+                          required
+                      />
+                  </div>
+                  <p className="text-xs text-stone-500 mt-1">We'll send your receipt confirmation here.</p>
+                </div>
+              )}
+
+              <div>
+                  <label htmlFor="phone" className="block text-sm font-medium leading-6 text-stone-900">
+                      Phone Number
+                  </label>
+                  <div className="relative mt-2 rounded-md shadow-sm">
+                      <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                          <Smartphone className="h-5 w-5 text-stone-400" aria-hidden="true" />
+                      </div>
+                      <input
+                          type="tel"
+                          name="phone"
+                          id="phone"
+                          className="block w-full rounded-md border-0 py-2.5 pl-10 text-stone-900 ring-1 ring-inset ring-stone-300 placeholder:text-stone-400 focus:ring-2 focus:ring-inset focus:ring-stone-600 sm:text-sm sm:leading-6"
+                          placeholder="+1 (555) 987-6543"
+                          value={phoneNumber}
+                          onChange={(e) => setPhoneNumber(e.target.value)}
+                          required
+                      />
+                  </div>
+              </div>
+
+              <div>
+                  <label className="block text-sm font-medium leading-6 text-stone-900">
+                      Upload Payment Receipt
+                  </label>
+                  <p className="text-xs text-stone-500 mt-1">
+                    Ensure the image clearly shows the transaction details and amount.
+                  </p>
+                  <div 
+                      className={`mt-2 flex justify-center rounded-lg border border-dashed border-stone-900/25 px-6 py-8 hover:bg-stone-50 transition-colors cursor-pointer ${receiptFile ? 'bg-stone-50 border-stone-400' : ''}`}
+                      onClick={() => fileInputRef.current?.click()}
+                  >
+                      <div className="text-center">
+                          {receiptFile ? (
+                              <>
+                                  <FileImage className="mx-auto h-10 w-10 text-stone-600" aria-hidden="true" />
+                                  <div className="mt-2 flex text-sm leading-6 text-stone-600 justify-center">
+                                      <span className="font-semibold text-stone-900">{receiptFile.name}</span>
+                                  </div>
+                                  <p className="text-xs text-stone-500 mt-1">Click to change file</p>
+                              </>
+                          ) : (
+                              <>
+                                  <Upload className="mx-auto h-10 w-10 text-stone-300" aria-hidden="true" />
+                                  <div className="mt-2 flex text-sm leading-6 text-stone-600 justify-center">
+                                      <span className="relative cursor-pointer rounded-md font-semibold text-stone-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-stone-600 focus-within:ring-offset-2 hover:text-stone-500">
+                                          <span>Upload receipt</span>
+                                      </span>
+                                  </div>
+                                  <p className="text-xs leading-5 text-stone-500">PNG, JPG up to 5MB</p>
+                              </>
+                          )}
+                          <input 
+                              ref={fileInputRef}
+                              id="file-upload" 
+                              name="file-upload" 
+                              type="file" 
+                              className="sr-only" 
+                              accept="image/*"
+                              onChange={handleFileChange}
+                          />
+                      </div>
+                  </div>
               </div>
           </div>
       </div>
@@ -281,8 +408,13 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
         {/* Info Check */}
         <div className="grid grid-cols-2 gap-4 text-sm">
             <div className="bg-stone-50 p-3 rounded border border-stone-100">
-                <p className="text-xs text-stone-500 uppercase tracking-wide">Phone</p>
-                <p className="font-medium text-stone-900 mt-1">{phoneNumber}</p>
+                <p className="text-xs text-stone-500 uppercase tracking-wide">Contact</p>
+                <div className="mt-1 space-y-1">
+                    <p className="font-medium text-stone-900 truncate" title={user?.email || guestEmail}>
+                        {user?.email || guestEmail}
+                    </p>
+                    <p className="font-medium text-stone-900">{phoneNumber}</p>
+                </div>
             </div>
             <div className="bg-stone-50 p-3 rounded border border-stone-100">
                  <p className="text-xs text-stone-500 uppercase tracking-wide">Receipt</p>
@@ -317,6 +449,32 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onClick={onClose} />
 
         <div className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+          
+          {/* Loading Overlay */}
+          {status === PaymentStatus.ANALYZING && (
+            <div className="absolute inset-0 z-50 bg-white/90 backdrop-blur-sm flex flex-col items-center justify-center p-4 text-center transition-all animate-in fade-in duration-300">
+                <Loader2 className="h-12 w-12 text-stone-900 animate-spin mb-4" />
+                
+                <h3 className="text-lg font-serif font-bold text-stone-900 transition-all duration-300">
+                    {progress < 40 ? 'Uploading Receipt...' : 'Verifying Payment'}
+                </h3>
+                <p className="text-sm text-stone-500 mt-2 max-w-xs mb-6 transition-all duration-300">
+                    {progress < 40 
+                        ? 'Securing your transaction details...' 
+                        : 'Please wait a moment while AI verifies your receipt.'}
+                </p>
+
+                {/* Progress Bar */}
+                <div className="w-full max-w-xs bg-stone-200 rounded-full h-2.5 overflow-hidden">
+                    <div 
+                        className="bg-stone-900 h-2.5 rounded-full transition-all duration-300 ease-out" 
+                        style={{ width: `${progress}%` }}
+                    />
+                </div>
+                <p className="text-xs text-stone-400 mt-2 font-medium">{Math.round(progress)}%</p>
+            </div>
+          )}
+
           <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
             
             {/* Header */}
@@ -335,6 +493,8 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   <h4 className="text-lg font-bold text-stone-900">Order Confirmed!</h4>
                   <p className="text-stone-500 text-center mt-2 px-4">
                     We have received your receipt and are processing your order.<br/>
+                    A confirmation email has been sent to <span className="font-medium text-stone-900">{user?.email || guestEmail}</span>.
+                    <br/>
                     <span className="italic text-xs text-stone-400 mt-2 block">AI Analysis: "{aiSummary}"</span>
                   </p>
                   <button 
@@ -412,20 +572,17 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                         type="button"
                         onClick={step === 3 ? handleSubmit : handleNext}
                         disabled={status === PaymentStatus.ANALYZING}
-                        className={`flex-1 rounded-md px-3 py-3 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-600 disabled:opacity-70 disabled:cursor-not-allowed ${
-                           step === 1 ? 'w-full' : ''
-                        } ${status === PaymentStatus.ANALYZING ? 'bg-stone-700' : 'bg-stone-900 hover:bg-stone-700'}`}
+                        className="flex-1 rounded-md bg-stone-900 px-3 py-3 text-sm font-semibold text-white shadow-sm hover:bg-stone-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-600 disabled:opacity-70 disabled:cursor-not-allowed"
                       >
-                         {status === PaymentStatus.ANALYZING ? (
-                            <span className="flex items-center justify-center gap-2">
-                               <Loader2 className="h-4 w-4 animate-spin" /> Verifying...
-                            </span>
-                         ) : (
-                            <span className="flex items-center justify-center gap-2">
-                               {step === 3 ? `Pay $${finalTotal.toFixed(2)}` : 'Next'}
-                               {step !== 3 && <ChevronRight size={16} />}
-                            </span>
-                         )}
+                        {status === PaymentStatus.ANALYZING ? (
+                             <span className="flex items-center justify-center gap-2">
+                                <Loader2 className="animate-spin" size={16} /> Processing
+                             </span>
+                        ) : (
+                             <span className="flex items-center justify-center gap-2">
+                                {step === 3 ? 'Confirm Order' : 'Next Step'} <ChevronRight size={16} />
+                             </span>
+                        )}
                       </button>
                   </div>
                 </>

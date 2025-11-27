@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Trash2, CreditCard } from 'lucide-react';
+import { X, Trash2, Minus, Plus } from 'lucide-react';
 import { CartItem } from '../types';
 
 interface CartProps {
@@ -7,10 +7,18 @@ interface CartProps {
   onClose: () => void;
   cartItems: CartItem[];
   onRemoveItem: (id: number) => void;
+  onUpdateQuantity: (id: number, quantity: number) => void;
   onCheckout: () => void;
 }
 
-export const Cart: React.FC<CartProps> = ({ isOpen, onClose, cartItems, onRemoveItem, onCheckout }) => {
+export const Cart: React.FC<CartProps> = ({ 
+  isOpen, 
+  onClose, 
+  cartItems, 
+  onRemoveItem, 
+  onUpdateQuantity, 
+  onCheckout 
+}) => {
   const total = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
   if (!isOpen) return null;
@@ -66,12 +74,33 @@ export const Cart: React.FC<CartProps> = ({ isOpen, onClose, cartItems, onRemove
                               <p className="mt-1 text-sm text-stone-500">{product.category}</p>
                             </div>
                             <div className="flex flex-1 items-end justify-between text-sm">
-                              <p className="text-stone-500">Qty {product.quantity}</p>
+                              
+                              {/* Quantity Selector */}
+                              <div className="flex items-center border border-stone-200 rounded-md">
+                                <button 
+                                  onClick={() => onUpdateQuantity(product.id, product.quantity - 1)}
+                                  className="p-1 text-stone-600 hover:text-black hover:bg-stone-100 transition-colors disabled:opacity-30"
+                                  disabled={product.quantity <= 1}
+                                  aria-label="Decrease quantity"
+                                >
+                                  <Minus size={14} />
+                                </button>
+                                <span className="px-2 text-stone-900 font-medium min-w-[1.5rem] text-center">
+                                  {product.quantity}
+                                </span>
+                                <button 
+                                  onClick={() => onUpdateQuantity(product.id, product.quantity + 1)}
+                                  className="p-1 text-stone-600 hover:text-black hover:bg-stone-100 transition-colors"
+                                  aria-label="Increase quantity"
+                                >
+                                  <Plus size={14} />
+                                </button>
+                              </div>
 
                               <button
                                 type="button"
                                 onClick={() => onRemoveItem(product.id)}
-                                className="font-medium text-red-500 hover:text-red-600 flex items-center gap-1"
+                                className="font-medium text-red-500 hover:text-red-600 flex items-center gap-1 transition-colors"
                               >
                                 <Trash2 size={14} /> Remove
                               </button>

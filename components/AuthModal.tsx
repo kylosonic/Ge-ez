@@ -42,17 +42,17 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }
 
     // Simulate Admin Auth
     setTimeout(() => {
-      if (adminEmail === 'admin@stylehive.com' && adminPass === 'admin123') {
+      if (adminEmail === 'admin@geezshirts.com' && adminPass === 'admin123') {
         const adminUser: User = {
-          name: 'StyleHive Admin',
-          email: 'admin@stylehive.com',
+          name: "Ge'ez Shirts Admin",
+          email: 'admin@geezshirts.com',
           role: 'admin',
           avatar: 'https://ui-avatars.com/api/?name=Admin&background=000&color=fff'
         };
         onLogin(adminUser);
         onClose();
       } else {
-        setError('Invalid credentials. Try admin@stylehive.com / admin123');
+        setError('Invalid credentials. Try admin@geezshirts.com / admin123');
       }
       setIsLoading(false);
     }, 1000);
@@ -64,7 +64,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }
       
       <div className="relative w-full max-w-md bg-white rounded-2xl shadow-xl overflow-hidden animate-in fade-in zoom-in duration-200">
         <div className="flex justify-between items-center p-6 border-b border-stone-100">
-          <h2 className="text-xl font-serif font-bold text-stone-900">Welcome to StyleHive</h2>
+          <h2 className="text-xl font-serif font-bold text-stone-900">Welcome to Ge'ez Shirts</h2>
           <button onClick={onClose} className="text-stone-400 hover:text-stone-600">
             <X size={20} />
           </button>
@@ -151,7 +151,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }
                     type="email"
                     required
                     className="block w-full pl-10 rounded-md border-stone-300 shadow-sm focus:border-stone-500 focus:ring-stone-500 sm:text-sm py-2 border"
-                    placeholder="admin@stylehive.com"
+                    placeholder="admin@geezshirts.com"
                     value={adminEmail}
                     onChange={(e) => setAdminEmail(e.target.value)}
                   />
@@ -186,7 +186,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }
               </div>
 
               <div className="text-center">
-                 <p className="text-xs text-stone-400">Use: <span className="font-mono">admin@stylehive.com / admin123</span></p>
+                 <p className="text-xs text-stone-400">Use: <span className="font-mono">admin@geezshirts.com / admin123</span></p>
               </div>
             </form>
           )}

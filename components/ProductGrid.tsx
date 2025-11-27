@@ -5,11 +5,18 @@ import { Plus } from 'lucide-react';
 interface ProductGridProps {
   products: Product[];
   onAddToCart: (product: Product) => void;
+  onProductClick: (product: Product) => void;
   selectedCategory: string;
   onSelectCategory: (category: string) => void;
 }
 
-export const ProductGrid: React.FC<ProductGridProps> = ({ products, onAddToCart, selectedCategory, onSelectCategory }) => {
+export const ProductGrid: React.FC<ProductGridProps> = ({ 
+    products, 
+    onAddToCart, 
+    onProductClick,
+    selectedCategory, 
+    onSelectCategory 
+}) => {
 
   // Extract unique categories from products, sorted alphabetically
   const categories = useMemo(() => {
@@ -90,7 +97,11 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ products, onAddToCart,
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-10 gap-x-6 xl:gap-x-8">
           {filteredProducts.map((product) => (
-            <div key={product.id} className="group relative">
+            <div 
+                key={product.id} 
+                className="group relative cursor-pointer"
+                onClick={() => onProductClick(product)}
+            >
               <div className="aspect-square w-full overflow-hidden rounded-xl bg-stone-200 group-hover:opacity-90 transition-opacity relative">
                 <img
                   src={product.image}
