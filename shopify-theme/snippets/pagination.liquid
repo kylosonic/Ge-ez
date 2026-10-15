@@ -1,0 +1,25 @@
+{%- if paginate.pages > 1 -%}
+  <nav class="pagination" role="navigation" aria-label="{{ 'general.pagination.label' | t }}">
+    {%- if paginate.previous -%}
+      <a class="pagination__item" href="{{ paginate.previous.url }}" aria-label="{{ 'general.pagination.previous' | t }}">&larr;</a>
+    {%- else -%}
+      <span class="pagination__item" aria-disabled="true">&larr;</span>
+    {%- endif -%}
+
+    {%- for part in paginate.parts -%}
+      {%- if part.is_link -%}
+        <a class="pagination__item" href="{{ part.url }}">{{ part.title }}</a>
+      {%- elsif part.title == paginate.current_page -%}
+        <span class="pagination__item" aria-current="page">{{ part.title }}</span>
+      {%- else -%}
+        <span class="pagination__item">{{ part.title }}</span>
+      {%- endif -%}
+    {%- endfor -%}
+
+    {%- if paginate.next -%}
+      <a class="pagination__item" href="{{ paginate.next.url }}" aria-label="{{ 'general.pagination.next' | t }}">&rarr;</a>
+    {%- else -%}
+      <span class="pagination__item" aria-disabled="true">&rarr;</span>
+    {%- endif -%}
+  </nav>
+{%- endif -%}

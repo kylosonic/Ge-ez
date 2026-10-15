@@ -1,0 +1,101 @@
+<section class="hero">
+  <div class="hero__inner">
+    <div class="hero__content">
+      <h1 class="hero__title">
+        <span>{{ section.settings.heading }}</span>
+        <span>{{ section.settings.subheading }}</span>
+      </h1>
+
+      <div class="hero__text rte">{{ section.settings.text }}</div>
+
+      <div class="hero__actions">
+        {%- if section.settings.primary_label != blank -%}
+          <a class="btn btn--primary" href="{{ section.settings.primary_link | default: routes.all_products_collection_url }}">{{ section.settings.primary_label }}</a>
+        {%- endif -%}
+        {%- if section.settings.secondary_label != blank -%}
+          <a class="btn btn--secondary" href="{{ section.settings.secondary_link | default: '#showcase' }}">
+            {{ section.settings.secondary_label }}
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true">{% render 'icon', name: 'arrow-up-right' %}</svg>
+          </a>
+        {%- endif -%}
+      </div>
+
+      {%- if section.blocks.size > 0 -%}
+        <div class="hero__why">
+          <h3>{{ section.settings.why_heading }}</h3>
+          {%- for block in section.blocks -%}
+            <div class="hero__why-item" {{ block.shopify_attributes }}>
+              <strong>{{ block.settings.title }}:</strong>
+              <span>{{ block.settings.text }}</span>
+            </div>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.quote != blank -%}
+        <p class="hero__quote">{{ section.settings.quote }}</p>
+      {%- endif -%}
+    </div>
+
+    <div class="hero__media">
+      {%- if section.settings.image != blank -%}
+        {{ section.settings.image
+          | image_url: width: 1600
+          | image_tag:
+            loading: 'eager',
+            widths: '600, 900, 1200, 1600',
+            sizes: '(min-width: 1024px) 50vw, 100vw',
+            alt: section.settings.image.alt | default: section.settings.heading
+        }}
+      {%- else -%}
+        <div class="hero__media-placeholder"></div>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Hero",
+  "blocks": [
+    {
+      "type": "reason",
+      "name": "Why-choose item",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title", "default": "Ethiopian Essence" },
+        { "type": "textarea", "id": "text", "label": "Text", "default": "Designs rooted in authentic motifs symbolizing prosperity, community, and pride." }
+      ]
+    }
+  ],
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "GEEZ MADE IN ETHIOPIA" },
+    { "type": "text", "id": "subheading", "label": "Subheading", "default": "Wear Your Heritage" },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Intro text",
+      "default": "<p>Welcome to GEEZ MADE IN ETHIOPIA, where ancient aesthetics meet modern apparel. We are a cultural cloth store dedicated to reviving and blending Ethiopian traditions with contemporary design.</p>"
+    },
+    { "type": "header", "content": "Buttons" },
+    { "type": "text", "id": "primary_label", "label": "Primary button label", "default": "Shop Now" },
+    { "type": "url", "id": "primary_link", "label": "Primary button link" },
+    { "type": "text", "id": "secondary_label", "label": "Secondary button label", "default": "View Lookbook" },
+    { "type": "url", "id": "secondary_link", "label": "Secondary button link" },
+    { "type": "header", "content": "Why choose us" },
+    { "type": "text", "id": "why_heading", "label": "Heading", "default": "Why Choose GEEZ?" },
+    { "type": "header", "content": "Media" },
+    { "type": "image_picker", "id": "image", "label": "Hero image" },
+    { "type": "text", "id": "quote", "label": "Quote", "default": "\"Reborn traditions. Redefined style.\"" }
+  ],
+  "presets": [
+    {
+      "name": "Hero",
+      "blocks": [
+        { "type": "reason", "settings": { "title": "Ethiopian Essence", "text": "Designs rooted in authentic motifs symbolizing prosperity, community, and pride." } },
+        { "type": "reason", "settings": { "title": "Premium Quality", "text": "Imported, 100% cotton shirts utilizing advanced printing techniques, including our signature DTF printing, for vibrant, lasting results." } },
+        { "type": "reason", "settings": { "title": "Customization", "text": "Design your own piece or choose from our curated collections to create a stylish, empowered, and comfortable cultural statement." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

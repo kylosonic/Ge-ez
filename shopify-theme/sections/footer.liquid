@@ -1,0 +1,106 @@
+{%- liquid
+  assign footer_menu = section.settings.menu
+  if footer_menu == blank
+    assign footer_menu = linklists['footer']
+  endif
+-%}
+<footer class="footer">
+  <div class="page-width">
+    <div class="footer__grid">
+      <div>
+        <p class="footer__brand">{{ section.settings.brand_text | default: shop.name }}</p>
+        <p class="footer__tagline">{{ section.settings.tagline }}</p>
+        <div class="footer__social">
+          {%- if settings.social_instagram != blank -%}
+            <a href="{{ settings.social_instagram }}" aria-label="Instagram" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{% render 'icon', name: 'instagram' %}</svg>
+            </a>
+          {%- endif -%}
+          {%- if settings.social_tiktok != blank -%}
+            <a href="{{ settings.social_tiktok }}" aria-label="TikTok" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{% render 'icon', name: 'tiktok' %}</svg>
+            </a>
+          {%- endif -%}
+          {%- if settings.social_facebook != blank -%}
+            <a href="{{ settings.social_facebook }}" aria-label="Facebook" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{% render 'icon', name: 'facebook' %}</svg>
+            </a>
+          {%- endif -%}
+          {%- if settings.social_telegram != blank -%}
+            <a href="{{ settings.social_telegram }}" aria-label="Telegram" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{% render 'icon', name: 'telegram' %}</svg>
+            </a>
+          {%- endif -%}
+        </div>
+      </div>
+
+      <div>
+        <h4>{{ section.settings.menu_heading }}</h4>
+        <ul class="footer__links">
+          {%- for link in footer_menu.links -%}
+            <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+          {%- endfor -%}
+        </ul>
+      </div>
+
+      <div>
+        <h4>{{ section.settings.contact_heading }}</h4>
+        <ul class="footer__links">
+          <li>{{ section.settings.address }}</li>
+          <li>{{ section.settings.hours }}</li>
+          <li><a href="tel:{{ section.settings.phone | remove: ' ' }}">{{ section.settings.phone }}</a></li>
+          <li><a href="mailto:{{ shop.email }}">{{ shop.email }}</a></li>
+        </ul>
+      </div>
+    </div>
+
+    {%- if settings.show_trust_badges -%}
+      <div class="trust-badges" style="border-color:#292524">
+        <div class="trust-badges__item" style="color:#a8a29e">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{% render 'icon', name: 'shield-check' %}</svg>
+          <span style="color:#a8a29e">Secure Payment</span>
+        </div>
+        <div class="trust-badges__item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{% render 'icon', name: 'truck' %}</svg>
+          <span style="color:#a8a29e">Fast Shipping</span>
+        </div>
+        <div class="trust-badges__item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{% render 'icon', name: 'refresh' %}</svg>
+          <span style="color:#a8a29e">Free Returns</span>
+        </div>
+      </div>
+    {%- endif -%}
+
+    <div class="footer__bottom">
+      <p style="margin:0">&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}. All rights reserved.</p>
+      <div class="footer__payment">
+        {%- for type in shop.enabled_payment_types -%}
+          {{ type | payment_type_svg_tag: class: 'payment-icon' }}
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    { "type": "text", "id": "brand_text", "label": "Brand text" },
+    {
+      "type": "textarea",
+      "id": "tagline",
+      "label": "Tagline",
+      "default": "A cultural cloth store dedicated to reviving and blending Ethiopian traditions with contemporary design. Reborn traditions. Redefined style."
+    },
+    { "type": "header", "content": "Menu column" },
+    { "type": "text", "id": "menu_heading", "label": "Heading", "default": "Shop" },
+    { "type": "link_list", "id": "menu", "label": "Menu", "default": "footer" },
+    { "type": "header", "content": "Contact column" },
+    { "type": "text", "id": "contact_heading", "label": "Heading", "default": "Visit the flagship store" },
+    { "type": "text", "id": "address", "label": "Address", "default": "Bole, Addis Ababa, Ethiopia" },
+    { "type": "text", "id": "hours", "label": "Opening hours", "default": "Mon - Sat: 10:00 AM - 8:00 PM" },
+    { "type": "text", "id": "phone", "label": "Phone", "default": "+251 91 123 4567" }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,17 @@
+{
+  "current": {
+    "color_dark": "#1c1917",
+    "color_text": "#1c1917",
+    "color_muted": "#78716c",
+    "color_background": "#fafaf9",
+    "color_surface": "#f5f5f4",
+    "color_border": "#e7e5e4",
+    "color_accent": "#2563eb",
+    "color_dark_section_bg": "#1c1917",
+    "color_dark_section_text": "#ffffff",
+    "heading_scale": 100,
+    "page_width": 1280,
+    "show_trust_badges": true,
+    "enable_cart_drawer": true
+  }
+}

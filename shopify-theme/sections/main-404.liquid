@@ -1,0 +1,17 @@
+<section class="section">
+  <div class="page-width text-center" style="padding:64px 0">
+    <h1 style="font-size:clamp(3rem, 10vw, 6rem);margin-bottom:8px">404</h1>
+    <h2>{{ 'general.not_found.title' | t }}</h2>
+    <p style="color:var(--color-muted)">{{ 'general.not_found.subtext' | t }}</p>
+    <p style="margin-top:28px">
+      <a class="btn btn--primary" href="{{ routes.all_products_collection_url }}">{{ 'general.continue_shopping' | t }}</a>
+    </p>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "404",
+  "settings": []
+}
+{% endschema %}

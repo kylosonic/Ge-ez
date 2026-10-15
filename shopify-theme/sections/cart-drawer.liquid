@@ -1,0 +1,91 @@
+{%- comment -%}
+  Slide-out cart. Rendered as a section so it can be refreshed with the
+  Shopify Section Rendering API after any cart mutation.
+{%- endcomment -%}
+<div class="cart-drawer__overlay" data-cart-overlay></div>
+
+<aside
+  class="cart-drawer"
+  data-cart-drawer
+  data-cart-count="{{ cart.item_count }}"
+  role="dialog"
+  aria-modal="true"
+  aria-label="{{ 'general.cart.title' | t }}"
+>
+  <div class="cart-drawer__header">
+    <h2>{{ 'general.cart.title' | t }}</h2>
+    <button type="button" class="header__icon" data-cart-close aria-label="{{ 'accessibility.close' | t }}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{% render 'icon', name: 'close' %}</svg>
+    </button>
+  </div>
+
+  <div class="cart-drawer__body">
+    <p class="cart-drawer__error" data-cart-error hidden role="alert"></p>
+
+    {%- if cart.item_count > 0 -%}
+      {%- for item in cart.items -%}
+        <div class="cart-line" data-cart-line="{{ forloop.index }}">
+          <a class="cart-line__image" href="{{ item.url }}" tabindex="-1" aria-hidden="true">
+            {%- if item.image -%}
+              <img src="{{ item.image | image_url: width: 144 }}" alt="{{ item.image.alt | escape }}" width="72" height="88" loading="lazy">
+            {%- endif -%}
+          </a>
+          <div>
+            <p class="cart-line__title"><a href="{{ item.url }}">{{ item.product.title }}</a></p>
+            {%- unless item.variant.title contains 'Default' -%}
+              <p class="cart-line__variant">{{ item.variant.title }}</p>
+            {%- endunless -%}
+            {%- if item.selling_plan_allocation -%}
+              <p class="cart-line__variant">{{ item.selling_plan_allocation.selling_plan.name }}</p>
+            {%- endif -%}
+
+            <div class="cart-line__controls">
+              <div class="quantity">
+                <button type="button" class="quantity__button" data-cart-qty data-line="{{ forloop.index }}" data-quantity="{{ item.quantity | minus: 1 }}" aria-label="{{ 'general.cart.quantity' | t }} -1">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" aria-hidden="true">{% render 'icon', name: 'minus' %}</svg>
+                </button>
+                <input class="quantity__input" type="number" min="0" value="{{ item.quantity }}" data-cart-qty-input data-line="{{ forloop.index }}" aria-label="{{ 'general.cart.quantity' | t }}">
+                <button type="button" class="quantity__button" data-cart-qty data-line="{{ forloop.index }}" data-quantity="{{ item.quantity | plus: 1 }}" aria-label="{{ 'general.cart.quantity' | t }} +1">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" aria-hidden="true">{% render 'icon', name: 'plus' %}</svg>
+                </button>
+              </div>
+              <span class="cart-line__price">{{ item.final_line_price | money }}</span>
+            </div>
+
+            <button type="button" class="cart-line__remove" data-cart-qty data-line="{{ forloop.index }}" data-quantity="0">
+              {{ 'general.cart.remove' | t }}
+            </button>
+          </div>
+        </div>
+      {%- endfor -%}
+    {%- else -%}
+      <div class="cart-drawer__empty">
+        <p>{{ 'general.cart.empty' | t }}</p>
+        <p style="font-size:0.9rem">{{ 'general.cart.empty_subtext' | t }}</p>
+      </div>
+    {%- endif -%}
+  </div>
+
+  {%- if cart.item_count > 0 -%}
+    <div class="cart-drawer__footer">
+      <div class="subtotal-row">
+        <span>{{ 'general.cart.subtotal' | t }}</span>
+        <span>{{ cart.total_price | money }}</span>
+      </div>
+      <p class="cart-note">{{ 'general.cart.taxes_and_shipping' | t }}</p>
+      <form action="{{ routes.cart_url }}" method="post" novalidate>
+        <button type="submit" name="checkout" class="btn btn--primary btn--full">{{ 'general.cart.checkout' | t }}</button>
+      </form>
+      <p style="text-align:center;margin:12px 0 0">
+        <a href="{{ routes.cart_url }}" style="font-size:0.85rem;text-decoration:underline;text-underline-offset:3px">{{ 'general.cart.view_cart' | t }}</a>
+      </p>
+    </div>
+  {%- endif -%}
+</aside>
+
+{% schema %}
+{
+  "name": "Cart drawer",
+  "settings": []
+}
+{% endschema %}

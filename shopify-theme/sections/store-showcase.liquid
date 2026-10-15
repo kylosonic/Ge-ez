@@ -1,0 +1,124 @@
+<section class="showcase" id="showcase">
+  <div class="page-width">
+    <div class="showcase__intro">
+      <div>
+        <h2>{{ section.settings.heading }}</h2>
+        <div class="showcase__lede rte">{{ section.settings.text }}</div>
+
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'info' -%}
+            <div class="showcase__info" {{ block.shopify_attributes }}>
+              <span class="showcase__info-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#e7e5e4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" aria-hidden="true">{% render 'icon', name: block.settings.icon %}</svg>
+              </span>
+              <div>
+                <h4>{{ block.settings.title }}</h4>
+                <p>{{ block.settings.text }}</p>
+              </div>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+
+      <div class="showcase__feature">
+        {%- if section.settings.feature_image != blank -%}
+          {{ section.settings.feature_image
+            | image_url: width: 1200
+            | image_tag: loading: 'lazy', widths: '600, 900, 1200', sizes: '(min-width: 1024px) 50vw, 100vw', alt: section.settings.heading
+          }}
+        {%- else -%}
+          <img src="{{ 'geez-store-front.jpg' | asset_url }}" alt="{{ section.settings.heading | escape }}" width="1200" height="1500" loading="lazy">
+        {%- endif -%}
+        {%- if section.settings.badge != blank -%}
+          <span class="showcase__badge">{{ section.settings.badge }}</span>
+        {%- endif -%}
+      </div>
+    </div>
+
+    {%- assign gallery_blocks = section.blocks | where: 'type', 'gallery_image' -%}
+    {%- if gallery_blocks.size > 0 -%}
+      <div class="showcase__gallery">
+        {%- for block in gallery_blocks -%}
+          <div class="showcase__gallery-item{% if block.settings.wide %} showcase__gallery-item--wide{% endif %}" {{ block.shopify_attributes }}>
+            {%- if block.settings.image != blank -%}
+              {{ block.settings.image
+                | image_url: width: 1200
+                | image_tag: loading: 'lazy', widths: '400, 700, 1200', sizes: '(min-width: 1024px) 25vw, (min-width: 768px) 50vw, 100vw', alt: block.settings.image.alt | default: shop.name
+              }}
+            {%- else -%}
+              {%- case forloop.index -%}
+                {%- when 1 -%}
+                  <img src="{{ 'geez-branding-wall.jpg' | asset_url }}" alt="{{ shop.name | escape }} branding wall" width="1200" height="900" loading="lazy">
+                {%- when 2 -%}
+                  <img src="{{ 'geez-racks.jpg' | asset_url }}" alt="Clothing racks" width="1200" height="900" loading="lazy">
+                {%- else -%}
+                  <img src="{{ 'geez-store-mirror.jpg' | asset_url }}" alt="Store interior" width="1200" height="900" loading="lazy">
+              {%- endcase -%}
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Store showcase",
+  "blocks": [
+    {
+      "type": "info",
+      "name": "Store detail",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "map-pin", "label": "Map pin" },
+            { "value": "clock", "label": "Clock" },
+            { "value": "phone", "label": "Phone" },
+            { "value": "star", "label": "Star" },
+            { "value": "check", "label": "Check" }
+          ],
+          "default": "map-pin"
+        },
+        { "type": "text", "id": "title", "label": "Title", "default": "Visit Us" },
+        { "type": "text", "id": "text", "label": "Text", "default": "Bole, Addis Ababa, Ethiopia" }
+      ]
+    },
+    {
+      "type": "gallery_image",
+      "name": "Gallery image",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "checkbox", "id": "wide", "label": "Double width", "default": false }
+      ]
+    }
+  ],
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Experience Ge'ez In Person" },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>Step into our world where tradition meets modern streetwear. Visit our flagship store in Addis Ababa to feel the fabric, try on the latest drops, and vibe with the Ge'ez community.</p>"
+    },
+    { "type": "image_picker", "id": "feature_image", "label": "Feature image" },
+    { "type": "text", "id": "badge", "label": "Badge text", "default": "Flagship Store" }
+  ],
+  "presets": [
+    {
+      "name": "Store showcase",
+      "blocks": [
+        { "type": "info", "settings": { "icon": "map-pin", "title": "Visit Us", "text": "Bole, Addis Ababa, Ethiopia" } },
+        { "type": "info", "settings": { "icon": "clock", "title": "Opening Hours", "text": "Mon - Sat: 10:00 AM - 8:00 PM" } },
+        { "type": "info", "settings": { "icon": "phone", "title": "Contact", "text": "+251 91 123 4567" } },
+        { "type": "gallery_image", "settings": { "wide": true } },
+        { "type": "gallery_image" },
+        { "type": "gallery_image" }
+      ]
+    }
+  ]
+}
+{% endschema %}

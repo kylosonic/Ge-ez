@@ -1,0 +1,157 @@
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+  assign product_form_id = 'product-form-' | append: section.id
+  assign option_names = product.options_with_values | map: 'name' | join: ' / '
+-%}
+<section class="page-width">
+  <div class="product">
+    <div class="product__media-list">
+      {%- if product.media.size > 0 -%}
+        {%- for media in product.media -%}
+          <div class="product__media-item">
+            {%- if media.media_type == 'image' -%}
+              {{ media
+                | image_url: width: 1400
+                | image_tag:
+                  loading: 'lazy',
+                  widths: '400, 700, 1000, 1400',
+                  sizes: '(min-width: 990px) 50vw, 100vw',
+                  alt: media.alt | default: product.title
+              }}
+            {%- else -%}
+              {{ media | media_tag }}
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      {%- else -%}
+        <div class="product__media-item">{{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}</div>
+      {%- endif -%}
+    </div>
+
+    <div class="product__info">
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <a href="{{ routes.root_url }}">Home</a>
+        {%- if collection -%}
+          <span>/</span><a href="{{ collection.url }}">{{ collection.title }}</a>
+        {%- endif -%}
+        <span>/</span><span>{{ product.title }}</span>
+      </nav>
+
+      <h1 class="product__title">{{ product.title }}</h1>
+
+      <div class="product__price">{% render 'price', item: current_variant %}</div>
+
+      <p class="product__status {% if current_variant.available %}product__status--in{% else %}product__status--out{% endif %}">
+        {%- if current_variant.available -%}
+          In stock
+        {%- else -%}
+          {{ 'products.product.sold_out' | t }}
+        {%- endif -%}
+      </p>
+
+      {%- form 'product', product, id: product_form_id, class: 'product-form', data-product-form: '' -%}
+        <input type="hidden" name="id" value="{{ current_variant.id }}">
+
+        {%- unless product.has_only_default_variant -%}
+          <div class="variant-picker">
+            {%- if product.options_with_values.size == 1 and product.variants.size <= 12 -%}
+              <div class="variant-picker__group">
+                <span class="variant-picker__label">{{ product.options_with_values.first.name }}</span>
+                <div class="variant-picker__options">
+                  {%- for variant in product.variants -%}
+                    <a
+                      class="variant-picker__option"
+                      href="{{ variant.url }}"
+                      {% if variant.id == current_variant.id %}aria-pressed="true"{% endif %}
+                      {% unless variant.available %}aria-disabled="true"{% endunless %}
+                    >{{ variant.title }}</a>
+                  {%- endfor -%}
+                </div>
+              </div>
+            {%- else -%}
+              <div class="variant-picker__group">
+                <label class="variant-picker__label" for="VariantSelect-{{ section.id }}">{{ option_names }}</label>
+                <div class="select-wrap">
+                  <select name="id" id="VariantSelect-{{ section.id }}" data-variant-select>
+                    {%- for variant in product.variants -%}
+                      <option
+                        value="{{ variant.id }}"
+                        {% if variant.id == current_variant.id %}selected{% endif %}
+                        {% unless variant.available %}disabled{% endunless %}
+                      >{{ variant.title }} &mdash; {{ variant.price | money }}</option>
+                    {%- endfor -%}
+                  </select>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{% render 'icon', name: 'chevron-down' %}</svg>
+                </div>
+              </div>
+            {%- endif -%}
+          </div>
+        {%- endunless -%}
+
+        <div class="product-form__row">
+          <div class="quantity" data-qty-stepper>
+            <button type="button" class="quantity__button" data-step="-1" aria-label="{{ 'products.product.quantity' | t }} -1">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" aria-hidden="true">{% render 'icon', name: 'minus' %}</svg>
+            </button>
+            <input class="quantity__input" type="number" name="quantity" value="1" min="1" aria-label="{{ 'products.product.quantity' | t }}">
+            <button type="button" class="quantity__button" data-step="1" aria-label="{{ 'products.product.quantity' | t }} +1">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" aria-hidden="true">{% render 'icon', name: 'plus' %}</svg>
+            </button>
+          </div>
+
+          <button type="submit" class="btn btn--primary product-form__submit"{% unless current_variant.available %} disabled{% endunless %}>
+            {%- if current_variant.available -%}
+              {{ 'products.product.add_to_cart' | t }}
+            {%- else -%}
+              {{ 'products.product.sold_out' | t }}
+            {%- endif -%}
+          </button>
+        </div>
+      {%- endform -%}
+
+      {%- if product.description != blank -%}
+        <div class="product__description rte" style="margin-top:32px">
+          <h2 style="font-size:1.1rem">{{ 'products.product.description' | t }}</h2>
+          {{ product.description }}
+        </div>
+      {%- endif -%}
+
+      <div class="product__meta">
+        <dl>
+          {%- if product.vendor != blank -%}
+            <dt>{{ 'products.product.vendor' | t }}</dt><dd>{{ product.vendor }}</dd>
+          {%- endif -%}
+          {%- if current_variant.sku != blank -%}
+            <dt>{{ 'products.product.sku' | t }}</dt><dd>{{ current_variant.sku }}</dd>
+          {%- endif -%}
+          <dt>Type</dt><dd>{{ product.type | default: '—' }}</dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+  {%- liquid
+    assign related_products = product.collections.first.products
+  -%}
+  {%- if related_products != blank and related_products.size > 1 -%}
+    <div class="section">
+      <h2>{{ 'products.product.related' | t }}</h2>
+      <div class="product-grid product-grid--related">
+        {%- assign shown = 0 -%}
+        {%- for related in related_products -%}
+          {%- if related.id != product.id and shown < 4 -%}
+            {% render 'product-card', product: related, show_quick_add: true %}
+            {%- assign shown = shown | plus: 1 -%}
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Product",
+  "settings": []
+}
+{% endschema %}

@@ -1,0 +1,219 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "blocks": {
+        "reason-1": {
+          "type": "reason",
+          "settings": {
+            "title": "Ethiopian Essence",
+            "text": "Designs rooted in authentic motifs symbolizing prosperity, community, and pride."
+          }
+        },
+        "reason-2": {
+          "type": "reason",
+          "settings": {
+            "title": "Premium Quality",
+            "text": "Imported, 100% cotton shirts utilizing advanced printing techniques, including our signature DTF printing, for vibrant, lasting results."
+          }
+        },
+        "reason-3": {
+          "type": "reason",
+          "settings": {
+            "title": "Customization",
+            "text": "Design your own piece or choose from our curated collections to create a stylish, empowered, and comfortable cultural statement."
+          }
+        }
+      },
+      "block_order": [
+        "reason-1",
+        "reason-2",
+        "reason-3"
+      ],
+      "settings": {}
+    },
+    "store-showcase": {
+      "type": "store-showcase",
+      "blocks": {
+        "info-1": {
+          "type": "info",
+          "settings": {
+            "icon": "map-pin",
+            "title": "Visit Us",
+            "text": "Bole, Addis Ababa, Ethiopia"
+          }
+        },
+        "info-2": {
+          "type": "info",
+          "settings": {
+            "icon": "clock",
+            "title": "Opening Hours",
+            "text": "Mon - Sat: 10:00 AM - 8:00 PM"
+          }
+        },
+        "info-3": {
+          "type": "info",
+          "settings": {
+            "icon": "phone",
+            "title": "Contact",
+            "text": "+251 91 123 4567"
+          }
+        },
+        "gallery-1": {
+          "type": "gallery_image",
+          "settings": {
+            "wide": true
+          }
+        },
+        "gallery-2": {
+          "type": "gallery_image",
+          "settings": {}
+        },
+        "gallery-3": {
+          "type": "gallery_image",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "info-1",
+        "info-2",
+        "info-3",
+        "gallery-1",
+        "gallery-2",
+        "gallery-3"
+      ],
+      "settings": {}
+    },
+    "category-list": {
+      "type": "category-list",
+      "blocks": {
+        "cat-1": {
+          "type": "category",
+          "settings": {
+            "title": "Full Collection",
+            "text": "Browse All Items"
+          }
+        },
+        "cat-2": {
+          "type": "category",
+          "settings": {
+            "title": "Shirts",
+            "text": "Essential Tops"
+          }
+        },
+        "cat-3": {
+          "type": "category",
+          "settings": {
+            "title": "Hoodies",
+            "text": "Cozy Comfort"
+          }
+        }
+      },
+      "block_order": [
+        "cat-1",
+        "cat-2",
+        "cat-3"
+      ],
+      "settings": {}
+    },
+    "featured-collection": {
+      "type": "featured-collection",
+      "settings": {
+        "heading": "Our Products",
+        "subheading": "All available items",
+        "collection": "all",
+        "products_to_show": 8,
+        "show_view_all": true
+      }
+    },
+    "trust-badges": {
+      "type": "trust-badges",
+      "blocks": {
+        "badge-1": {
+          "type": "badge",
+          "settings": {
+            "icon": "shield-check",
+            "text": "Secure Payment"
+          }
+        },
+        "badge-2": {
+          "type": "badge",
+          "settings": {
+            "icon": "truck",
+            "text": "Fast Shipping"
+          }
+        },
+        "badge-3": {
+          "type": "badge",
+          "settings": {
+            "icon": "refresh",
+            "text": "Free Returns"
+          }
+        }
+      },
+      "block_order": [
+        "badge-1",
+        "badge-2",
+        "badge-3"
+      ],
+      "settings": {}
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q-1": {
+          "type": "question",
+          "settings": {
+            "question": "What is the material?",
+            "answer": "<p>Our shirts are made from 100% premium Ethiopian cotton, known for its softness and durability.</p>"
+          }
+        },
+        "q-2": {
+          "type": "question",
+          "settings": {
+            "question": "How do I care for this item?",
+            "answer": "<p>Machine wash cold with like colors. Tumble dry low or hang dry for best results. Do not bleach.</p>"
+          }
+        },
+        "q-3": {
+          "type": "question",
+          "settings": {
+            "question": "What is your return policy?",
+            "answer": "<p>We offer free returns within 30 days of purchase. Items must be unworn and in original condition.</p>"
+          }
+        },
+        "q-4": {
+          "type": "question",
+          "settings": {
+            "question": "Do you ship internationally?",
+            "answer": "<p>Yes, we ship worldwide. Shipping times vary by location but typically take 7-14 business days.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q-1",
+        "q-2",
+        "q-3",
+        "q-4"
+      ],
+      "settings": {}
+    },
+    "rich-text": {
+      "type": "rich-text",
+      "settings": {
+        "heading": "Reborn traditions. Redefined style.",
+        "button_label": "Shop the collection",
+        "button_link": ""
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "store-showcase",
+    "category-list",
+    "featured-collection",
+    "trust-badges",
+    "faq",
+    "rich-text"
+  ]
+}

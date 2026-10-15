@@ -1,0 +1,159 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Ge'ez",
+    "theme_version": "1.0.0",
+    "theme_author": "Ge'ez",
+    "theme_documentation_url": "https://shopify.dev/docs/storefronts/themes",
+    "theme_support_url": "https://shopify.dev/docs/storefronts/themes"
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Brand colors"
+      },
+      {
+        "type": "color",
+        "id": "color_dark",
+        "label": "Dark / primary",
+        "default": "#1c1917"
+      },
+      {
+        "type": "color",
+        "id": "color_text",
+        "label": "Body text",
+        "default": "#1c1917"
+      },
+      {
+        "type": "color",
+        "id": "color_muted",
+        "label": "Muted text",
+        "default": "#78716c"
+      },
+      {
+        "type": "color",
+        "id": "color_background",
+        "label": "Page background",
+        "default": "#fafaf9"
+      },
+      {
+        "type": "color",
+        "id": "color_surface",
+        "label": "Surface / hero background",
+        "default": "#f5f5f4"
+      },
+      {
+        "type": "color",
+        "id": "color_border",
+        "label": "Borders",
+        "default": "#e7e5e4"
+      },
+      {
+        "type": "color",
+        "id": "color_accent",
+        "label": "Accent",
+        "default": "#2563eb"
+      },
+      {
+        "type": "header",
+        "content": "Dark section"
+      },
+      {
+        "type": "color",
+        "id": "color_dark_section_bg",
+        "label": "Dark section background",
+        "default": "#1c1917"
+      },
+      {
+        "type": "color",
+        "id": "color_dark_section_text",
+        "label": "Dark section text",
+        "default": "#ffffff"
+      }
+    ]
+  },
+  {
+    "name": "Typography",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Headings use Playfair Display and body text uses Inter, loaded from Google Fonts."
+      },
+      {
+        "type": "range",
+        "id": "heading_scale",
+        "label": "Heading scale",
+        "min": 90,
+        "max": 120,
+        "step": 5,
+        "unit": "%",
+        "default": 100
+      }
+    ]
+  },
+  {
+    "name": "Layout",
+    "settings": [
+      {
+        "type": "range",
+        "id": "page_width",
+        "label": "Page width",
+        "min": 1000,
+        "max": 1600,
+        "step": 20,
+        "unit": "px",
+        "default": 1280
+      },
+      {
+        "type": "checkbox",
+        "id": "show_trust_badges",
+        "label": "Show trust badges in footer",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_cart_drawer",
+        "label": "Open cart drawer when adding to cart",
+        "default": true
+      }
+    ]
+  },
+  {
+    "name": "Favicon",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon image",
+        "info": "Will be resized to 48x48px."
+      }
+    ]
+  },
+  {
+    "name": "Social",
+    "settings": [
+      {
+        "type": "text",
+        "id": "social_instagram",
+        "label": "Instagram URL"
+      },
+      {
+        "type": "text",
+        "id": "social_tiktok",
+        "label": "TikTok URL"
+      },
+      {
+        "type": "text",
+        "id": "social_facebook",
+        "label": "Facebook URL"
+      },
+      {
+        "type": "text",
+        "id": "social_telegram",
+        "label": "Telegram URL"
+      }
+    ]
+  }
+]

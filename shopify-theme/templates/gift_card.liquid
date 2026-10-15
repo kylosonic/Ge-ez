@@ -1,0 +1,17 @@
+<div class="customer customer--narrow" style="padding-top:64px">
+  <div class="text-center">
+    <h1>{{ shop.name }}</h1>
+    <h2 style="margin-top:24px">{{ gift_card.balance | money }} gift card</h2>
+
+    {%- if gift_card.enabled == false or gift_card.expired -%}
+      <p class="form-errors" style="display:inline-block">This gift card is no longer active.</p>
+    {%- endif -%}
+
+    <p>Use this code at checkout:</p>
+    <p style="font-size:1.5rem;letter-spacing:0.08em;font-weight:600">{{ gift_card.code | format_code }}</p>
+
+    <p style="margin-top:32px">
+      <a class="btn btn--primary" href="{{ shop.url }}">Start shopping</a>
+    </p>
+  </div>
+</div>

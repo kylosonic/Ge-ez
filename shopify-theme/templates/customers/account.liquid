@@ -1,0 +1,51 @@
+<div class="customer">
+  <div class="page-width">
+    <div class="account-layout">
+      <aside>
+        <h1 style="font-size:1.4rem">{{ 'customer.account.title' | t }}</h1>
+        <p style="color:var(--color-muted);font-size:0.9rem">{{ customer.email }}</p>
+        <nav class="account-nav">
+          <a href="{{ routes.account_url }}" aria-current="page">{{ 'customer.account.details' | t }}</a>
+          <a href="{{ routes.account_addresses_url }}">{{ 'customer.addresses.title' | t }}</a>
+          <a href="{{ routes.account_logout_url }}">{{ 'customer.account.logout' | t }}</a>
+        </nav>
+      </aside>
+
+      <div>
+        <h2>{{ 'customer.orders.title' | t }}</h2>
+        {%- paginate customer.orders by 20 -%}
+          {%- if customer.orders.size > 0 -%}
+            <table class="order-table">
+              <thead>
+                <tr>
+                  <th>{{ 'customer.orders.order_number' | t }}</th>
+                  <th>{{ 'customer.order.date' | t }}</th>
+                  <th>{{ 'customer.order.fulfillment_status' | t }}</th>
+                  <th class="order-table__right">{{ 'customer.orders.total' | t }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {%- for order in customer.orders -%}
+                  <tr>
+                    <td><a href="{{ order.customer_url }}">{{ order.name }}</a></td>
+                    <td>{{ order.created_at | date: '%b %d, %Y' }}</td>
+                    <td>{{ order.fulfillment_status_label }}</td>
+                    <td class="order-table__right">{{ order.total_price | money }}</td>
+                  </tr>
+                {%- endfor -%}
+              </tbody>
+            </table>
+            {% render 'pagination', paginate: paginate %}
+          {%- else -%}
+            <p style="color:var(--color-muted)">{{ 'customer.account.no_orders' | t }}</p>
+          {%- endif -%}
+        {%- endpaginate -%}
+
+        {%- if customer.default_address -%}
+          <h2 style="margin-top:40px">{{ 'customer.addresses.default' | t }}</h2>
+          <div class="address-card">{{ customer.default_address | format_address }}</div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</div>

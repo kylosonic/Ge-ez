@@ -1,0 +1,34 @@
+{%- comment -%}
+  Renders a price block.
+  Usage: {% render 'price', item: product %}  or  {% render 'price', item: variant %}
+{%- endcomment -%}
+{%- liquid
+  assign target = item
+  assign is_product = false
+  if target.variants
+    assign is_product = true
+  endif
+
+  assign current_price = target.price
+  assign compare_price = target.compare_at_price
+  assign price_varies = target.price_varies
+
+  if is_product
+    assign current_price = target.price_min
+    assign compare_price = target.compare_at_price_max
+  endif
+
+  assign on_sale = false
+  if compare_price > current_price
+    assign on_sale = true
+  endif
+-%}
+<span class="price{% if on_sale %} price--on-sale{% endif %}{% unless target.available %} price--unavailable{% endunless %}">
+  <span class="price__current">
+    {%- if price_varies %}{{ 'products.product.from_price' | t }} {% endif -%}
+    {{- current_price | money -}}
+  </span>
+  {%- if on_sale %}
+    <span class="price__was">{{ compare_price | money }}</span>
+  {%- endif -%}
+</span>

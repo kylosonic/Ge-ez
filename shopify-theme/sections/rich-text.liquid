@@ -1,0 +1,26 @@
+<section class="section">
+  <div class="page-width text-center">
+    {%- if section.settings.heading != blank -%}
+      <h2>{{ section.settings.heading }}</h2>
+    {%- endif -%}
+    <div class="rte" style="max-width:64ch;margin:0 auto">{{ section.settings.text }}</div>
+    {%- if section.settings.button_label != blank -%}
+      <p style="margin-top:24px">
+        <a class="btn btn--primary" href="{{ section.settings.button_link }}">{{ section.settings.button_label }}</a>
+      </p>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Rich text",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Reborn traditions. Redefined style." },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Every piece begins with a story from Ethiopia and ends as something you can wear.</p>" },
+    { "type": "text", "id": "button_label", "label": "Button label" },
+    { "type": "url", "id": "button_link", "label": "Button link" }
+  ],
+  "presets": [{ "name": "Rich text" }]
+}
+{% endschema %}

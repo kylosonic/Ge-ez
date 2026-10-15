@@ -1,0 +1,100 @@
+{%- liquid
+  assign cart_form_id = 'cart-form-' | append: section.id
+-%}
+<section class="cart-page">
+  <div class="page-width">
+    <h1>{{ 'general.cart.title' | t }}</h1>
+
+    {%- if cart.item_count > 0 -%}
+      <form action="{{ routes.cart_url }}" method="post" id="{{ cart_form_id }}" novalidate>
+        <table class="cart-table">
+          <thead>
+            <tr>
+              <th>{{ 'customer.order.product' | t }}</th>
+              <th class="cart-table__hide-mobile">{{ 'general.cart.quantity' | t }}</th>
+              <th class="cart-table__hide-mobile order-table__right">{{ 'customer.order.total' | t }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {%- for item in cart.items -%}
+              <tr>
+                <td>
+                  <div class="cart-table__product">
+                    {%- if item.image -%}
+                      <a href="{{ item.url }}">
+                        <img src="{{ item.image | image_url: width: 144 }}" alt="{{ item.image.alt | escape }}" width="72" height="88" loading="lazy">
+                      </a>
+                    {%- endif -%}
+                    <div>
+                      <a href="{{ item.url }}" style="font-weight:500">{{ item.product.title }}</a>
+                      {%- unless item.variant.title contains 'Default' -%}
+                        <p style="margin:2px 0 0;font-size:0.85rem;color:var(--color-muted)">{{ item.variant.title }}</p>
+                      {%- endunless -%}
+                      <p class="cart-table__hide-desktop" style="margin:6px 0 0;font-weight:500">{{ item.final_line_price | money }}</p>
+                      <button type="button" class="cart-line__remove" data-cart-qty data-line="{{ forloop.index }}" data-quantity="0" style="margin-top:6px">
+                        {{ 'general.cart.remove' | t }}
+                      </button>
+                    </div>
+                  </div>
+                </td>
+                <td class="cart-table__hide-mobile">
+                  <div class="quantity">
+                    <button type="button" class="quantity__button" data-cart-qty data-line="{{ forloop.index }}" data-quantity="{{ item.quantity | minus: 1 }}" aria-label="-1">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" aria-hidden="true">{% render 'icon', name: 'minus' %}</svg>
+                    </button>
+                    <input class="quantity__input" type="number" min="0" value="{{ item.quantity }}" data-cart-qty-input data-line="{{ forloop.index }}" aria-label="{{ 'general.cart.quantity' | t }}">
+                    <button type="button" class="quantity__button" data-cart-qty data-line="{{ forloop.index }}" data-quantity="{{ item.quantity | plus: 1 }}" aria-label="+1">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" aria-hidden="true">{% render 'icon', name: 'plus' %}</svg>
+                    </button>
+                  </div>
+                </td>
+                <td class="cart-table__hide-mobile order-table__right">{{ item.final_line_price | money }}</td>
+              </tr>
+            {%- endfor -%}
+          </tbody>
+        </table>
+
+        <div class="cart-footer">
+          <div class="cart-footer__row">
+            <span>{{ 'customer.order.subtotal' | t }}</span>
+            <span>{{ cart.items_subtotal_price | money }}</span>
+          </div>
+          {%- if cart.cart_level_discount_applications.size > 0 -%}
+            {%- for discount in cart.cart_level_discount_applications -%}
+              <div class="cart-footer__row">
+                <span>{{ 'customer.order.discount' | t }} ({{ discount.title }})</span>
+                <span>-{{ discount.total_allocated_amount | money }}</span>
+              </div>
+            {%- endfor -%}
+          {%- endif -%}
+          <div class="cart-footer__row cart-footer__row--total">
+            <span>{{ 'general.cart.subtotal' | t }}</span>
+            <span>{{ cart.total_price | money }}</span>
+          </div>
+          <p class="cart-note">{{ 'general.cart.taxes_and_shipping' | t }}</p>
+
+          <div class="field">
+            <label class="field__label" for="CartNote">{{ 'general.cart.note' | t }}</label>
+            <textarea class="field__textarea" name="note" id="CartNote">{{ cart.note }}</textarea>
+          </div>
+
+          <button type="submit" name="update" class="btn btn--secondary btn--full" style="margin-bottom:8px">{{ 'general.cart.update' | t }}</button>
+          <button type="submit" name="checkout" class="btn btn--primary btn--full">{{ 'general.cart.checkout' | t }}</button>
+        </div>
+      </form>
+    {%- else -%}
+      <div class="empty-state">
+        <h2>{{ 'general.cart.empty' | t }}</h2>
+        <p>{{ 'general.cart.empty_subtext' | t }}</p>
+        <a class="btn btn--primary" href="{{ routes.all_products_collection_url }}">{{ 'general.continue_shopping' | t }}</a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Cart",
+  "settings": []
+}
+{% endschema %}

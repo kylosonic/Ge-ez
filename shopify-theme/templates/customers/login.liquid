@@ -1,0 +1,51 @@
+<div class="customer customer--narrow">
+  <h1 class="customer__title">{{ 'customer.login.title' | t }}</h1>
+
+  {%- form 'customer_login' -%}
+    {%- if form.errors -%}
+      <div class="form-errors">{{ form.errors | default_errors }}</div>
+    {%- endif -%}
+
+    <div class="field">
+      <label class="field__label" for="CustomerEmail">{{ 'customer.login.email' | t }}</label>
+      <input class="field__input" type="email" name="customer[email]" id="CustomerEmail" autocomplete="email" autocorrect="off" autocapitalize="off" required>
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="CustomerPassword">{{ 'customer.login.password' | t }}</label>
+      <input class="field__input" type="password" name="customer[password]" id="CustomerPassword" autocomplete="current-password">
+    </div>
+
+    <button type="submit" class="btn btn--primary btn--full">{{ 'customer.login.sign_in' | t }}</button>
+  {%- endform -%}
+
+  <div class="faq" style="margin-top:32px">
+    <details class="faq__item">
+      <summary class="faq__question">
+        <span>{{ 'customer.login.forgot_password' | t }}</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{% render 'icon', name: 'chevron-down' %}</svg>
+      </summary>
+      <div class="faq__answer">
+        <p style="margin-top:0">{{ 'customer.recover.subtext' | t }}</p>
+        {%- form 'recover_customer_password' -%}
+          {%- if form.posted_successfully? -%}
+            <div class="form-success">We have sent you an email to reset your password.</div>
+          {%- endif -%}
+          {%- if form.errors -%}
+            <div class="form-errors">{{ form.errors | default_errors }}</div>
+          {%- endif -%}
+          <div class="field">
+            <label class="field__label" for="RecoverEmail">{{ 'customer.login.email' | t }}</label>
+            <input class="field__input" type="email" name="email" id="RecoverEmail" autocomplete="email" required>
+          </div>
+          <button type="submit" class="btn btn--secondary btn--full">{{ 'customer.recover.submit' | t }}</button>
+        {%- endform -%}
+      </div>
+    </details>
+  </div>
+
+  <div class="customer__links">
+    <a href="{{ routes.account_register_url }}">{{ 'customer.login.create_account' | t }}</a>
+    <a href="{{ routes.root_url }}">{{ 'general.continue_shopping' | t }}</a>
+  </div>
+</div>

@@ -1,0 +1,59 @@
+{%- comment -%}
+  Product card for grids.
+  Usage: {% render 'product-card', product: product, show_quick_add: true %}
+{%- endcomment -%}
+{%- liquid
+  assign card_product = product
+  assign card_variant = card_product.selected_or_first_available_variant
+  assign quick_add_id = nil
+  if card_product.has_only_default_variant and card_variant.available
+    assign quick_add_id = card_variant.id
+  endif
+  assign card_url = card_product.url
+  if collection
+    assign card_url = card_product.url | within: collection
+  endif
+  assign alt_text = card_product.featured_media.alt | default: card_product.title
+-%}
+<article class="product-card">
+  <a class="product-card__media" href="{{ card_url }}">
+    {%- if card_product.featured_media -%}
+      {{ card_product.featured_media
+        | image_url: width: 800
+        | image_tag:
+          loading: 'lazy',
+          widths: '200, 300, 400, 600, 800',
+          sizes: '(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw',
+          alt: alt_text
+      }}
+    {%- else -%}
+      {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+    {%- endif -%}
+
+    {%- if card_product.compare_at_price_max > card_product.price_min -%}
+      <span class="product-card__badge">{{ 'products.product.on_sale' | t }}</span>
+    {%- elsif card_product.available == false -%}
+      <span class="product-card__badge product-card__badge--soldout">{{ 'products.product.sold_out' | t }}</span>
+    {%- endif -%}
+  </a>
+
+  {%- if show_quick_add -%}
+    {%- if quick_add_id -%}
+      <button type="button" class="quick-add" data-quick-add="{{ quick_add_id }}" aria-label="{{ 'products.product.add_to_cart' | t }}: {{ card_product.title | escape }}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{% render 'icon', name: 'plus' %}</svg>
+      </button>
+    {%- else -%}
+      <a class="quick-add" href="{{ card_url }}" aria-label="{{ 'products.product.view_details' | t }}: {{ card_product.title | escape }}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{% render 'icon', name: 'arrow-up-right' %}</svg>
+      </a>
+    {%- endif -%}
+  {%- endif -%}
+
+  <div class="product-card__info">
+    <div>
+      <h3 class="product-card__title"><a href="{{ card_url }}">{{ card_product.title }}</a></h3>
+      <p class="product-card__category">{{ card_product.type | default: card_product.vendor }}</p>
+    </div>
+    <div class="product-card__price">{% render 'price', item: card_product %}</div>
+  </div>
+</article>

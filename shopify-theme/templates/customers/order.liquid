@@ -1,0 +1,73 @@
+<div class="customer">
+  <div class="page-width" style="max-width:960px">
+    <p class="section__eyebrow"><a href="{{ routes.account_url }}">{{ 'customer.account.title' | t }}</a></p>
+    <h1>{{ 'customer.order.title' | t: name: order.name }}</h1>
+    <p style="color:var(--color-muted)">{{ order.created_at | date: '%B %d, %Y' }}</p>
+
+    <table class="order-table" style="margin-top:24px">
+      <thead>
+        <tr>
+          <th>{{ 'customer.order.product' | t }}</th>
+          <th>{{ 'customer.order.sku' | t }}</th>
+          <th>{{ 'customer.order.price' | t }}</th>
+          <th>{{ 'customer.order.quantity' | t }}</th>
+          <th class="order-table__right">{{ 'customer.order.total' | t }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {%- for line_item in order.line_items -%}
+          <tr>
+            <td>
+              {%- if line_item.url -%}
+                <a href="{{ line_item.url }}">{{ line_item.title }}</a>
+              {%- else -%}
+                {{ line_item.title }}
+              {%- endif -%}
+            </td>
+            <td>{{ line_item.sku | default: '—' }}</td>
+            <td>{{ line_item.price | money }}</td>
+            <td>{{ line_item.quantity }}</td>
+            <td class="order-table__right">{{ line_item.final_line_price | money }}</td>
+          </tr>
+        {%- endfor -%}
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="4" class="order-table__right">{{ 'customer.order.subtotal' | t }}</td>
+          <td class="order-table__right">{{ order.subtotal_price | money }}</td>
+        </tr>
+        {%- for shipping_method in order.shipping_methods -%}
+          <tr>
+            <td colspan="4" class="order-table__right">{{ 'customer.order.shipping' | t }} ({{ shipping_method.title }})</td>
+            <td class="order-table__right">{{ shipping_method.price | money }}</td>
+          </tr>
+        {%- endfor -%}
+        {%- for tax_line in order.tax_lines -%}
+          <tr>
+            <td colspan="4" class="order-table__right">{{ 'customer.order.tax' | t }} ({{ tax_line.title }} {{ tax_line.rate | times: 100.0 | round: 2 }}%)</td>
+            <td class="order-table__right">{{ tax_line.price | money }}</td>
+          </tr>
+        {%- endfor -%}
+        <tr>
+          <td colspan="4" class="order-table__right"><strong>{{ 'customer.order.total' | t }}</strong></td>
+          <td class="order-table__right"><strong>{{ order.total_price | money }}</strong></td>
+        </tr>
+      </tfoot>
+    </table>
+
+    <div style="display:grid;gap:32px;margin-top:40px">
+      {%- if order.shipping_address -%}
+        <div>
+          <h2 style="font-size:1.1rem">{{ 'customer.order.shipping' | t }}</h2>
+          <div class="address-card">{{ order.shipping_address | format_address }}</div>
+        </div>
+      {%- endif -%}
+      {%- if order.billing_address -%}
+        <div>
+          <h2 style="font-size:1.1rem">Billing</h2>
+          <div class="address-card">{{ order.billing_address | format_address }}</div>
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>

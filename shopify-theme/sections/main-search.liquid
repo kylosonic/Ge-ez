@@ -1,0 +1,63 @@
+<section class="section">
+  <div class="page-width">
+    <div class="section__header">
+      <h1>{{ 'general.search.title' | t }}</h1>
+      <form action="{{ routes.search_url }}" method="get" role="search" style="max-width:520px">
+        <input type="hidden" name="options[prefix]" value="last">
+        <input
+          type="search"
+          name="q"
+          value="{{ search.terms | escape }}"
+          placeholder="{{ 'general.search.placeholder' | t }}"
+          aria-label="{{ 'general.search.placeholder' | t }}"
+        >
+      </form>
+      {%- if search.performed -%}
+        <p style="color:var(--color-muted);margin-top:12px">
+          {{ 'general.search.results_with_count' | t: count: search.results_count }}
+          {%- if search.terms != blank %} &middot; &ldquo;{{ search.terms | escape }}&rdquo;{% endif -%}
+        </p>
+      {%- endif -%}
+    </div>
+
+    {%- if search.performed -%}
+      {%- if search.results_count > 0 -%}
+        {%- paginate search.results by 12 -%}
+          <div class="product-grid">
+            {%- for item in search.results -%}
+              {%- if item.object_type == 'product' -%}
+                {% render 'product-card', product: item, show_quick_add: true %}
+              {%- else -%}
+                <article class="product-card">
+                  <a class="product-card__media" href="{{ item.url }}">
+                    {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                  </a>
+                  <div class="product-card__info">
+                    <div>
+                      <h3 class="product-card__title"><a href="{{ item.url }}">{{ item.title }}</a></h3>
+                      <p class="product-card__category">{{ item.object_type | capitalize }}</p>
+                    </div>
+                  </div>
+                </article>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+          {% render 'pagination', paginate: paginate %}
+        {%- endpaginate -%}
+      {%- else -%}
+        <div class="empty-state">
+          <h2>{{ 'general.search.no_results' | t }}</h2>
+          <p>{{ 'collections.general.no_products_subtext' | t }}</p>
+          <a class="btn btn--primary" href="{{ routes.all_products_collection_url }}">{{ 'general.continue_shopping' | t }}</a>
+        </div>
+      {%- endif -%}
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Search results",
+  "settings": []
+}
+{% endschema %}

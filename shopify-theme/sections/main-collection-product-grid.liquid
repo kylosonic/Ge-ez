@@ -1,0 +1,103 @@
+{%- liquid
+  assign category_menu = section.settings.category_menu
+  assign type_string = ''
+  for product in collection.products
+    if product.type != blank
+      unless type_string contains product.type
+        assign type_string = type_string | append: product.type | append: '~'
+      endunless
+    endif
+  endfor
+  assign type_list = type_string | split: '~'
+-%}
+<section class="section">
+  <div class="page-width">
+    <div class="section__header">
+      <h1>{{ collection.title }}</h1>
+      {%- if collection.description != blank -%}
+        <div class="rte" style="color:var(--color-muted);max-width:64ch">{{ collection.description }}</div>
+      {%- endif -%}
+    </div>
+
+    <div class="collection-toolbar">
+      <div class="collection-toolbar__title">
+        <p>{{ 'products.facets.product_count' | t: count: collection.products_count }}</p>
+      </div>
+
+      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+        {%- if category_menu != blank -%}
+          <div class="pill-row">
+            <a class="pill" href="{{ collection.url }}"{% unless collection.current_type or collection.current_vendor %} aria-current="page"{% endunless %}>All</a>
+            {%- for link in category_menu.links -%}
+              <a class="pill" href="{{ link.url }}">{{ link.title }}</a>
+            {%- endfor -%}
+          </div>
+        {%- elsif type_list.size > 0 -%}
+          <div class="pill-row">
+            <a class="pill" href="{{ collection.url }}"{% unless collection.current_type %} aria-current="page"{% endunless %}>All</a>
+            {%- for type in type_list -%}
+              {%- if type != blank -%}
+                <a class="pill" href="{{ collection.url }}/{{ type | handle }}"{% if collection.current_type == type %} aria-current="page"{% endif %}>{{ type }}</a>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+
+        {%- if collection.sort_options.size > 0 -%}
+          <form method="get" action="{{ collection.url }}" style="min-width:200px">
+            <div class="select-wrap">
+              <label class="visually-hidden" for="SortBy">{{ 'products.facets.sort_by' | t }}</label>
+              <select name="sort_by" id="SortBy" onchange="this.form.submit()">
+                {%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
+                {%- for option in collection.sort_options -%}
+                  <option value="{{ option.value }}"{% if option.value == sort_by %} selected{% endif %}>{{ option.name }}</option>
+                {%- endfor -%}
+              </select>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{% render 'icon', name: 'chevron-down' %}</svg>
+            </div>
+          </form>
+        {%- endif -%}
+      </div>
+    </div>
+
+    {%- paginate collection.products by section.settings.products_per_page -%}
+      {%- if collection.products.size > 0 -%}
+        <div class="product-grid">
+          {%- for product in collection.products -%}
+            {% render 'product-card', product: product, show_quick_add: true %}
+          {%- endfor -%}
+        </div>
+        {% render 'pagination', paginate: paginate %}
+      {%- else -%}
+        <div class="empty-state">
+          <h2>{{ 'collections.general.no_products' | t }}</h2>
+          <p>{{ 'collections.general.no_products_subtext' | t }}</p>
+          <a class="btn btn--primary" href="{{ routes.all_products_collection_url }}">{{ 'general.continue_shopping' | t }}</a>
+        </div>
+      {%- endif -%}
+    {%- endpaginate -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Collection products",
+  "settings": [
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "label": "Products per page",
+      "min": 4,
+      "max": 24,
+      "step": 4,
+      "default": 12
+    },
+    {
+      "type": "link_list",
+      "id": "category_menu",
+      "label": "Category pills menu",
+      "info": "Optional. Defaults to product types found on this page."
+    }
+  ]
+}
+{% endschema %}

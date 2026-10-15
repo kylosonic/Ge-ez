@@ -1,0 +1,25 @@
+<div class="customer customer--narrow">
+  <h1 class="customer__title">{{ 'customer.activate_account.title' | t }}</h1>
+  <p style="color:var(--color-muted);text-align:center">{{ 'customer.activate_account.subtext' | t }}</p>
+
+  {%- form 'activate_customer_password' -%}
+    {%- if form.errors -%}
+      <div class="form-errors">{{ form.errors | default_errors }}</div>
+    {%- endif -%}
+
+    <div class="field">
+      <label class="field__label" for="ActivatePassword">{{ 'customer.activate_account.password' | t }}</label>
+      <input class="field__input" type="password" name="customer[password]" id="ActivatePassword" autocomplete="new-password" required>
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="ActivatePasswordConfirm">{{ 'customer.activate_account.password_confirmation' | t }}</label>
+      <input class="field__input" type="password" name="customer[password_confirmation]" id="ActivatePasswordConfirm" autocomplete="new-password" required>
+    </div>
+
+    <button type="submit" class="btn btn--primary btn--full">{{ 'customer.activate_account.submit' | t }}</button>
+    <p style="text-align:center;margin-top:12px">
+      <button type="submit" name="decline" class="btn btn--secondary btn--full" style="margin-top:8px">{{ 'customer.activate_account.decline' | t }}</button>
+    </p>
+  {%- endform -%}
+</div>

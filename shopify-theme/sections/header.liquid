@@ -1,0 +1,87 @@
+{%- liquid
+  assign nav_menu = section.settings.menu
+  if nav_menu == blank
+    assign nav_menu = linklists['main-menu']
+  endif
+  assign brand = section.settings.brand_text | default: shop.name
+-%}
+<header class="header">
+  <div class="page-width">
+    <div class="header__inner">
+      <div style="display:flex;align-items:center;gap:4px">
+        <button
+          type="button"
+          class="header__icon header__burger"
+          data-menu-toggle
+          aria-expanded="false"
+          aria-controls="MobileMenu"
+          aria-label="{{ 'accessibility.menu' | t }}"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{% render 'icon', name: 'menu' %}</svg>
+        </button>
+        <a href="{{ routes.root_url }}" class="header__brand">{{ brand }}</a>
+      </div>
+
+      <nav class="header__nav" role="navigation">
+        {%- for link in nav_menu.links -%}
+          <a class="header__nav-link" href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title }}</a>
+        {%- endfor -%}
+      </nav>
+
+      <div class="header__actions">
+        <button type="button" class="header__icon" data-search-toggle aria-expanded="false" aria-controls="SearchPanel" aria-label="{{ 'accessibility.search' | t }}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{% render 'icon', name: 'search' %}</svg>
+        </button>
+
+        <a class="header__icon" href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}" aria-label="{{ 'customer.account.title' | t }}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{% render 'icon', name: 'user' %}</svg>
+        </a>
+
+        <a class="header__icon" href="{{ routes.cart_url }}" data-cart-toggle aria-label="{{ 'accessibility.cart' | t }}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{% render 'icon', name: 'cart' %}</svg>
+          <span class="cart-count"{% if cart.item_count == 0 %} hidden{% endif %}>{{ cart.item_count }}</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-width" id="SearchPanel" data-search-panel hidden>
+    <form action="{{ routes.search_url }}" method="get" role="search" style="padding:0 0 16px">
+      <input type="hidden" name="options[prefix]" value="last">
+      <input
+        type="search"
+        name="q"
+        value="{{ search.terms | escape }}"
+        placeholder="{{ 'general.search.placeholder' | t }}"
+        aria-label="{{ 'general.search.placeholder' | t }}"
+      >
+    </form>
+  </div>
+
+  <div class="mobile-menu" id="MobileMenu" data-mobile-menu hidden>
+    {%- for link in nav_menu.links -%}
+      <a class="mobile-menu__link" href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title }}</a>
+    {%- endfor -%}
+    <a class="mobile-menu__link" href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}">{{ 'customer.account.title' | t }}</a>
+  </div>
+</header>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "text",
+      "id": "brand_text",
+      "label": "Brand text",
+      "info": "Defaults to your store name."
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "default": "main-menu"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,33 @@
+Handle,Title,Body (HTML),Vendor,Type,Tags,Published,Option1 Name,Option1 Value,Variant SKU,Variant Grams,Variant Inventory Policy,Variant Fulfillment Service,Variant Price,Variant Compare At Price,Variant Requires Shipping,Variant Taxable,Variant Barcode,Image Src,Image Position,Image Alt Text,Gift Card,SEO Title,SEO Description,Status
+heritage-portrait-tee-black,Heritage Portrait Tee — Black,"<p>Heavyweight black tee carrying a portrait graphic drawn from Ethiopian visual tradition. Made from 100% premium cotton using DTF printing for vibrant, lasting results.</p>",Ge'ez,Shirts,"tees, ethiopian, printed",TRUE,Size,S,GZ-TEE-01-S,200,continue,manual,32.00,,TRUE,TRUE,,,1,Black tee with Ethiopian portrait graphic,FALSE,Heritage Portrait Tee — Black | Ge'ez,Heritage Portrait Tee — Black — Ethiopian-made apparel from Ge'ez.,active
+heritage-portrait-tee-black,,,,,,,,M,GZ-TEE-01-M,,continue,manual,32.00,,TRUE,TRUE,,,,,FALSE,,,active
+heritage-portrait-tee-black,,,,,,,,L,GZ-TEE-01-L,,continue,manual,32.00,,TRUE,TRUE,,,,,FALSE,,,active
+heritage-portrait-tee-black,,,,,,,,XL,GZ-TEE-01-XL,,continue,manual,32.00,,TRUE,TRUE,,,,,FALSE,,,active
+sunset-horizon-tee-black,Sunset Horizon Tee — Black,"<p>Black tee with a warm horizon print in orange and green. Made from 100% premium cotton using DTF printing for vibrant, lasting results.</p>",Ge'ez,Shirts,"tees, ethiopian, printed",TRUE,Size,S,GZ-TEE-02-S,200,continue,manual,32.00,38.00,TRUE,TRUE,,,1,Black tee with orange and green horizon print,FALSE,Sunset Horizon Tee — Black | Ge'ez,Sunset Horizon Tee — Black — Ethiopian-made apparel from Ge'ez.,active
+sunset-horizon-tee-black,,,,,,,,M,GZ-TEE-02-M,,continue,manual,32.00,,TRUE,TRUE,,,,,FALSE,,,active
+sunset-horizon-tee-black,,,,,,,,L,GZ-TEE-02-L,,continue,manual,32.00,,TRUE,TRUE,,,,,FALSE,,,active
+sunset-horizon-tee-black,,,,,,,,XL,GZ-TEE-02-XL,,continue,manual,32.00,,TRUE,TRUE,,,,,FALSE,,,active
+blue-motif-longline-tee-white,Blue Motif Longline Tee — White,"<p>Longline white tee with an indigo motif print and a relaxed, extended hem. Made from 100% premium cotton using DTF printing for vibrant, lasting results.</p>",Ge'ez,Shirts,"tees, longline, printed",TRUE,Size,S,GZ-TEE-03-S,220,continue,manual,36.00,,TRUE,TRUE,,,1,White longline tee with blue motif print,FALSE,Blue Motif Longline Tee — White | Ge'ez,Blue Motif Longline Tee — White — Ethiopian-made apparel from Ge'ez.,active
+blue-motif-longline-tee-white,,,,,,,,M,GZ-TEE-03-M,,continue,manual,36.00,,TRUE,TRUE,,,,,FALSE,,,active
+blue-motif-longline-tee-white,,,,,,,,L,GZ-TEE-03-L,,continue,manual,36.00,,TRUE,TRUE,,,,,FALSE,,,active
+blue-motif-longline-tee-white,,,,,,,,XL,GZ-TEE-03-XL,,continue,manual,36.00,,TRUE,TRUE,,,,,FALSE,,,active
+amharic-script-longline-tee-white,Amharic Script Longline Tee — White,"<p>Longline white tee featuring Amharic script set as a vertical graphic. Made from 100% premium cotton using DTF printing for vibrant, lasting results.</p>",Ge'ez,Shirts,"tees, longline, amharic",TRUE,Size,S,GZ-TEE-04-S,220,continue,manual,36.00,,TRUE,TRUE,,,1,White longline tee with Amharic script print,FALSE,Amharic Script Longline Tee — White | Ge'ez,Amharic Script Longline Tee — White — Ethiopian-made apparel from Ge'ez.,active
+amharic-script-longline-tee-white,,,,,,,,M,GZ-TEE-04-M,,continue,manual,36.00,,TRUE,TRUE,,,,,FALSE,,,active
+amharic-script-longline-tee-white,,,,,,,,L,GZ-TEE-04-L,,continue,manual,36.00,,TRUE,TRUE,,,,,FALSE,,,active
+amharic-script-longline-tee-white,,,,,,,,XL,GZ-TEE-04-XL,,continue,manual,36.00,,TRUE,TRUE,,,,,FALSE,,,active
+lalibela-arch-tee-white,Lalibela Arch Tee — White,"<p>White tee printed with an arch motif referencing Lalibela's rock-hewn churches. Made from 100% premium cotton using DTF printing for vibrant, lasting results.</p>",Ge'ez,Shirts,"tees, ethiopian, printed",TRUE,Size,S,GZ-TEE-05-S,200,continue,manual,32.00,,TRUE,TRUE,,,1,White tee with arch motif print,FALSE,Lalibela Arch Tee — White | Ge'ez,Lalibela Arch Tee — White — Ethiopian-made apparel from Ge'ez.,active
+lalibela-arch-tee-white,,,,,,,,M,GZ-TEE-05-M,,continue,manual,32.00,,TRUE,TRUE,,,,,FALSE,,,active
+lalibela-arch-tee-white,,,,,,,,L,GZ-TEE-05-L,,continue,manual,32.00,,TRUE,TRUE,,,,,FALSE,,,active
+lalibela-arch-tee-white,,,,,,,,XL,GZ-TEE-05-XL,,continue,manual,32.00,,TRUE,TRUE,,,,,FALSE,,,active
+classic-geez-hoodie-black,Classic Ge'ez Hoodie — Black,"<p>Midweight black hoodie with a front print, kangaroo pocket and ribbed cuffs. Made from 100% premium cotton using DTF printing for vibrant, lasting results.</p>",Ge'ez,Hoodies,"hoodies, ethiopian",TRUE,Size,S,GZ-HOD-01-S,500,continue,manual,68.00,,TRUE,TRUE,,,1,Black Ge'ez hoodie,FALSE,Classic Ge'ez Hoodie — Black | Ge'ez,Classic Ge'ez Hoodie — Black — Ethiopian-made apparel from Ge'ez.,active
+classic-geez-hoodie-black,,,,,,,,M,GZ-HOD-01-M,,continue,manual,68.00,,TRUE,TRUE,,,,,FALSE,,,active
+classic-geez-hoodie-black,,,,,,,,L,GZ-HOD-01-L,,continue,manual,68.00,,TRUE,TRUE,,,,,FALSE,,,active
+classic-geez-hoodie-black,,,,,,,,XL,GZ-HOD-01-XL,,continue,manual,68.00,,TRUE,TRUE,,,,,FALSE,,,active
+timeless-joggers-black,Timeless Joggers — Black,<p>Tapered black joggers with an elasticated drawcord waist and side pockets.</p>,Ge'ez,Pants,"pants, joggers",TRUE,Size,S,GZ-PNT-01-S,400,continue,manual,52.00,,TRUE,TRUE,,,1,Black tapered joggers,FALSE,Timeless Joggers — Black | Ge'ez,Timeless Joggers — Black — Ethiopian-made apparel from Ge'ez.,active
+timeless-joggers-black,,,,,,,,M,GZ-PNT-01-M,,continue,manual,52.00,,TRUE,TRUE,,,,,FALSE,,,active
+timeless-joggers-black,,,,,,,,L,GZ-PNT-01-L,,continue,manual,52.00,,TRUE,TRUE,,,,,FALSE,,,active
+timeless-joggers-black,,,,,,,,XL,GZ-PNT-01-XL,,continue,manual,52.00,,TRUE,TRUE,,,,,FALSE,,,active
+everyday-long-sleeve-white,Everyday Long Sleeve — White,"<p>Clean white long-sleeve tee with a small chest print. Made from 100% premium cotton using DTF printing for vibrant, lasting results.</p>",Ge'ez,Shirts,"tees, long sleeve",TRUE,Size,S,GZ-TEE-06-S,240,continue,manual,44.00,,TRUE,TRUE,,,1,White long sleeve tee,FALSE,Everyday Long Sleeve — White | Ge'ez,Everyday Long Sleeve — White — Ethiopian-made apparel from Ge'ez.,active
+everyday-long-sleeve-white,,,,,,,,M,GZ-TEE-06-M,,continue,manual,44.00,,TRUE,TRUE,,,,,FALSE,,,active
+everyday-long-sleeve-white,,,,,,,,L,GZ-TEE-06-L,,continue,manual,44.00,,TRUE,TRUE,,,,,FALSE,,,active
+everyday-long-sleeve-white,,,,,,,,XL,GZ-TEE-06-XL,,continue,manual,44.00,,TRUE,TRUE,,,,,FALSE,,,active
