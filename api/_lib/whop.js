@@ -212,7 +212,7 @@ export function findBlockingPurchase(payments, requestedPlanId) {
 
 export function downloadsForPayment(payment, requestedSlug) {
   if (payment.account_id !== ACCOUNT_ID) return [];
-  if (payment.status !== 'paid') return [];
+  if (!paymentStillGrantsAccess(payment)) return [];
 
   if (payment.variant_id === BUNDLE_PLAN_ID) {
     if (requestedSlug) {
