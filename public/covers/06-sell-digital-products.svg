@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1600" viewBox="0 0 1200 1600" role="img" aria-label="Sell Digital Products">
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#052e16"/><stop offset="1" stop-color="#047857"/></linearGradient>
+<radialGradient id="glow" cx="0.78" cy="0.16" r="0.85"><stop offset="0" stop-color="#ffffff" stop-opacity="0.16"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/></radialGradient>
+<linearGradient id="fade" x1="0" y1="0" x2="0" y2="1"><stop offset="0.55" stop-color="#000000" stop-opacity="0"/><stop offset="1" stop-color="#000000" stop-opacity="0.38"/></linearGradient>
+</defs>
+<rect width="1200" height="1600" fill="url(#bg)"/>
+<rect width="1200" height="1600" fill="url(#glow)"/>
+<text x="1110" y="1480" text-anchor="end" font-family="Georgia, serif" font-weight="700" font-size="620" fill="#ecfdf5" opacity="0.07" letter-spacing="-20">06</text>
+<rect x="64" y="64" width="1072" height="1472" fill="none" stroke="#ecfdf5" stroke-opacity="0.16" stroke-width="2"/>
+<text x="104" y="176" font-family="Helvetica, Arial, sans-serif" font-size="26" font-weight="600" letter-spacing="6" fill="#ecfdf5" opacity="0.72">GEEZ DIGITAL - DIGITAL PRODUCTS</text>
+<text x="100" y="640.2" font-family="Georgia, 'Times New Roman', serif" font-size="94" font-weight="700" fill="#ecfdf5" letter-spacing="-1.5">Sell Digital</text>
+<text x="100" y="739.8" font-family="Georgia, 'Times New Roman', serif" font-size="94" font-weight="700" fill="#ecfdf5" letter-spacing="-1.5">Products</text>
+<rect x="104" y="791.8" width="128" height="4" fill="#ecfdf5" opacity="0.55"/>
+<text x="104" y="863.8" font-family="Georgia, serif" font-style="italic" font-size="32" fill="#ecfdf5" opacity="0.78">Find a problem, build the fix, get paid</text>
+<rect width="1200" height="1600" fill="url(#fade)"/>
+<text x="104" y="1444" font-family="Helvetica, Arial, sans-serif" font-size="23" font-weight="600" letter-spacing="5" fill="#ecfdf5" opacity="0.82">GLOBAL EDITION</text>
+<text x="104" y="1488" font-family="Helvetica, Arial, sans-serif" font-size="23" letter-spacing="2" fill="#ecfdf5" opacity="0.6">99 PAGES - PDF - INSTANT DOWNLOAD</text>
+<text x="1096" y="1488" text-anchor="end" font-family="Georgia, serif" font-size="30" fill="#ecfdf5" opacity="0.85">Ge'ez</text>
+</svg>

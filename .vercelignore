@@ -1,0 +1,11 @@
+.git
+.github
+.npm-cache
+.tmp
+assets
+evidence
+interview-prep-shopify
+node_modules
+output-global
+shopify-theme
+*.png

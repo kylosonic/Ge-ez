@@ -1,167 +1,218 @@
 import React from 'react';
-import { X, ShoppingBag, Star, ArrowRight, Heart } from 'lucide-react';
-import { Product } from '../types';
+import { X, ShoppingBag, ArrowRight, Check, FileText, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import type { Product } from '../types';
+import { formatUSD } from '../data/catalog';
 import { TrustBadges } from './TrustBadges';
-import { ReviewSection } from './ReviewSection';
 import { FAQ } from './FAQ';
 
 interface ProductDetailModalProps {
-    isOpen: boolean;
-    onClose: () => void;
-    product: Product | null;
-    relatedProducts: Product[];
-    onAddToCart: (product: Product) => void;
-    onSelectProduct: (product: Product) => void;
-    isWishlisted?: boolean;
-    onToggleWishlist?: () => void;
+  isOpen: boolean;
+  onClose: () => void;
+  product: Product | null;
+  relatedProducts: Product[];
+  onSelectProduct: (product: Product) => void;
 }
 
 export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
-    isOpen,
-    onClose,
-    product,
-    relatedProducts,
-    onAddToCart,
-    onSelectProduct,
-    isWishlisted = false,
-    onToggleWishlist = () => { }
+  isOpen,
+  onClose,
+  product,
+  relatedProducts,
+  onSelectProduct,
 }) => {
-    // Prevent body scroll when modal is open
-    React.useEffect(() => {
-        if (isOpen) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = 'unset';
-        }
-        return () => {
-            document.body.style.overflow = 'unset';
-        };
-    }, [isOpen]);
+  React.useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
 
-    if (!product && !isOpen) return null;
+  if (!product && !isOpen) return null;
 
-    return (
-        <AnimatePresence>
-            {isOpen && product && (
-                <div className="fixed inset-0 z-[60] overflow-y-auto">
-                    <div className="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
-                            onClick={onClose}
-                        />
+  return (
+    <AnimatePresence>
+      {isOpen && product && (
+        <div className="fixed inset-0 z-[60] overflow-y-auto">
+          <div className="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
+              onClick={onClose}
+            />
 
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                            transition={{ duration: 0.3 }}
-                            className="relative transform overflow-hidden rounded-xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-4xl"
-                        >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.96, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.96, y: 20 }}
+              transition={{ duration: 0.25 }}
+              className="relative transform overflow-hidden rounded-xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-5xl"
+            >
+              <button
+                onClick={onClose}
+                className="absolute right-4 top-4 z-20 rounded-full bg-white/90 p-2 text-stone-500 transition-colors hover:bg-white hover:text-stone-900"
+                aria-label="Close"
+              >
+                <X size={22} />
+              </button>
 
-                            <button
-                                onClick={onClose}
-                                className="absolute top-4 right-4 p-2 bg-white/80 rounded-full text-stone-500 hover:text-stone-900 z-10 hover:bg-white transition-colors"
-                            >
-                                <X size={24} />
-                            </button>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2">
-                                {/* Image Section */}
-                                <div className="bg-stone-100 relative h-96 md:h-auto">
-                                    <img
-                                        src={product.image}
-                                        alt={product.name}
-                                        className="h-full w-full object-cover object-center"
-                                    />
-                                </div>
-
-                                {/* Details Section */}
-                                <div className="p-8 flex flex-col justify-center max-h-[80vh] overflow-y-auto">
-                                    <div>
-                                        <span className="text-sm text-stone-500 font-medium tracking-wider uppercase">{product.category}</span>
-                                        <h2 className="mt-1 text-3xl font-serif font-bold text-stone-900">{product.name}</h2>
-                                        <div className="mt-4 flex items-center gap-4">
-                                            <span className="text-2xl font-medium text-stone-900">${product.price.toFixed(2)}</span>
-                                            <div className="flex items-center text-yellow-500 text-sm">
-                                                <Star fill="currentColor" size={16} />
-                                                <Star fill="currentColor" size={16} />
-                                                <Star fill="currentColor" size={16} />
-                                                <Star fill="currentColor" size={16} />
-                                                <Star fill="currentColor" size={16} />
-                                                <span className="ml-2 text-stone-400 text-xs">(25 reviews)</span>
-                                            </div>
-                                        </div>
-
-                                        <p className="mt-6 text-stone-600 leading-relaxed">
-                                            Experience premium quality with our {product.name}. Crafted from the finest materials, this piece from our {product.category} collection offers both comfort and durability for everyday wear. Designed with a modern fit, it's the perfect addition to your wardrobe.
-                                        </p>
-
-                                        <TrustBadges />
-
-                                        <div className="mt-8 flex gap-4">
-                                            <button
-                                                onClick={() => {
-                                                    onAddToCart(product);
-                                                }}
-                                                className="flex-1 flex items-center justify-center gap-2 rounded-full bg-stone-900 px-8 py-4 text-base font-medium text-white hover:bg-stone-800 transition-all shadow-lg hover:shadow-xl transform active:scale-[0.98]"
-                                            >
-                                                <ShoppingBag size={20} />
-                                                Add to Cart - ${product.price.toFixed(2)}
-                                            </button>
-                                            <button
-                                                onClick={onToggleWishlist}
-                                                className="h-14 w-14 rounded-full border border-stone-200 flex items-center justify-center hover:bg-stone-50 transition-colors"
-                                            >
-                                                <Heart size={24} fill={isWishlisted ? "currentColor" : "none"} className={isWishlisted ? "text-red-500" : "text-stone-400"} />
-                                            </button>
-                                        </div>
-
-                                        <FAQ />
-                                    </div>
-                                </div>
-                            </div>
-
-                            <ReviewSection />
-
-                            {/* Related Products */}
-                            {relatedProducts.length > 0 && (
-                                <div className="bg-stone-50 p-8 border-t border-stone-200">
-                                    <div className="flex items-center justify-between mb-6">
-                                        <h3 className="text-lg font-bold font-serif text-stone-900">You Might Also Like</h3>
-                                        <span className="text-xs font-medium text-stone-500 uppercase tracking-wide">Related to {product.category}</span>
-                                    </div>
-
-                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                        {relatedProducts.map((item) => (
-                                            <div
-                                                key={item.id}
-                                                className="group cursor-pointer bg-white rounded-lg p-2 border border-stone-100 hover:shadow-md transition-all"
-                                                onClick={() => onSelectProduct(item)}
-                                            >
-                                                <div className="aspect-square rounded-md overflow-hidden bg-stone-200 relative mb-3">
-                                                    <img src={item.image} alt={item.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                                                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors" />
-                                                </div>
-                                                <h4 className="text-sm font-medium text-stone-900 truncate px-1">{item.name}</h4>
-                                                <div className="flex justify-between items-center mt-1 px-1">
-                                                    <p className="text-sm text-stone-500">${item.price.toFixed(2)}</p>
-                                                    <div className="p-1 rounded-full bg-stone-100 text-stone-900 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                        <ArrowRight size={12} />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-                        </motion.div>
+              <div className="grid grid-cols-1 md:grid-cols-[minmax(0,0.85fr)_minmax(0,1fr)]">
+                {/* Cover */}
+                <div className="relative flex items-start justify-center bg-stone-100 p-8 md:p-10">
+                  <div className="w-full max-w-[320px]">
+                    <img
+                      src={product.image}
+                      alt={`${product.name} cover`}
+                      className="w-full rounded-sm shadow-2xl ring-1 ring-black/10"
+                    />
+                    <div className="mt-6 flex flex-wrap justify-center gap-2">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-white px-3 py-1 text-[11px] font-medium text-stone-700 shadow-sm">
+                        <FileText size={12} /> PDF
+                      </span>
+                      <span className="rounded-full bg-white px-3 py-1 text-[11px] font-medium text-stone-700 shadow-sm">
+                        {product.pages} pages
+                      </span>
+                      <span className="rounded-full bg-white px-3 py-1 text-[11px] font-medium text-stone-700 shadow-sm">
+                        {product.chapters.length} chapters
+                      </span>
                     </div>
+                  </div>
                 </div>
-            )}
-        </AnimatePresence>
-    );
+
+                {/* Details */}
+                <div className="max-h-[85vh] overflow-y-auto p-7 sm:p-9">
+                  <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-stone-500">
+                    {product.category}
+                  </span>
+                  <h2 className="mt-2 font-serif text-3xl font-bold leading-tight text-stone-900">
+                    {product.name}
+                  </h2>
+                  <p className="mt-2 text-stone-500">{product.tagline}</p>
+
+                  <div className="mt-5 flex flex-wrap items-center gap-3">
+                    <span className="text-2xl font-semibold text-stone-900">
+                      {formatUSD(product.price)}
+                    </span>
+                    {product.compareAt && (
+                      <span className="text-sm text-stone-400 line-through">
+                        {formatUSD(product.compareAt)}
+                      </span>
+                    )}
+                    {product.badge && (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-amber-800">
+                        <Sparkles size={10} /> {product.badge}
+                      </span>
+                    )}
+                  </div>
+
+                  <p className="mt-5 leading-relaxed text-stone-600">{product.description}</p>
+
+                  <h3 className="mt-7 font-serif text-base font-bold text-stone-900">
+                    What you will be able to do
+                  </h3>
+                  <ul className="mt-3 space-y-2">
+                    {product.outcomes.map((outcome) => (
+                      <li key={outcome} className="flex gap-2 text-sm leading-relaxed text-stone-600">
+                        <Check size={16} className="mt-0.5 flex-shrink-0 text-emerald-600" />
+                        <span>{outcome}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <h3 className="mt-7 font-serif text-base font-bold text-stone-900">
+                    What is inside the download
+                  </h3>
+                  <ul className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                    {product.includes.map((item) => (
+                      <li
+                        key={item}
+                        className="rounded-lg border border-stone-200 bg-stone-50 px-3 py-2 text-xs leading-relaxed text-stone-600"
+                      >
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+
+                  <h3 className="mt-7 font-serif text-base font-bold text-stone-900">
+                    {product.isBundle ? 'The ten guides' : 'Chapter list'}
+                  </h3>
+                  <ol className="mt-3 max-h-64 space-y-1.5 overflow-y-auto rounded-lg border border-stone-200 bg-white p-3 text-sm text-stone-600">
+                    {product.chapters.map((chapter, index) => (
+                      <li key={chapter} className="flex gap-3">
+                        <span className="w-5 flex-shrink-0 text-right text-xs font-semibold text-stone-400">
+                          {String(index + 1).padStart(2, '0')}
+                        </span>
+                        <span className="leading-snug">{chapter}</span>
+                      </li>
+                    ))}
+                  </ol>
+
+                  <TrustBadges />
+
+                  <div className="mt-2 flex flex-col gap-3 sm:flex-row">
+                    <a
+                      href={product.checkoutUrl}
+                      className="flex flex-1 items-center justify-center gap-2 rounded-full bg-stone-900 px-6 py-3.5 text-base font-medium text-white shadow-lg transition-all hover:bg-stone-800 active:scale-[0.99]"
+                    >
+                      <ShoppingBag size={18} />
+                      Buy securely on Whop — {formatUSD(product.price)}
+                    </a>
+                  </div>
+                  <p className="mt-3 text-center text-[11px] text-stone-500">
+                    Secure Whop checkout · Instant access · 30-day guarantee
+                  </p>
+
+                  <FAQ />
+                </div>
+              </div>
+
+              {relatedProducts.length > 0 && (
+                <div className="border-t border-stone-200 bg-stone-50 p-7 sm:p-9">
+                  <div className="mb-5 flex items-center justify-between">
+                    <h3 className="font-serif text-lg font-bold text-stone-900">
+                      Also in {product.category}
+                    </h3>
+                    <span className="text-[11px] uppercase tracking-wide text-stone-500">
+                      {relatedProducts.length} guide{relatedProducts.length === 1 ? '' : 's'}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+                    {relatedProducts.map((item) => (
+                      <button
+                        key={item.id}
+                        onClick={() => onSelectProduct(item)}
+                        className="group rounded-lg border border-stone-100 bg-white p-2 text-left transition-all hover:shadow-md"
+                      >
+                        <div className="relative mb-3 aspect-[3/4] overflow-hidden rounded bg-stone-200">
+                          <img
+                            src={item.image}
+                            alt={`${item.name} cover`}
+                            loading="lazy"
+                            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          />
+                        </div>
+                        <h4 className="truncate px-1 text-sm font-medium text-stone-900">
+                          {item.name}
+                        </h4>
+                        <div className="mt-1 flex items-center justify-between px-1">
+                          <p className="text-sm text-stone-500">{formatUSD(item.price)}</p>
+                          <ArrowRight size={12} className="text-stone-400" />
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </motion.div>
+          </div>
+        </div>
+      )}
+    </AnimatePresence>
+  );
 };

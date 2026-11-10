@@ -1,126 +1,114 @@
 import React from 'react';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowDown, Download, FileText } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { FREE_INDEX } from '../data/catalog';
 
 interface HeroProps {
-  onSelectCategory: (category: string) => void;
+  onBrowse: () => void;
 }
 
-export const Hero: React.FC<HeroProps> = ({ onSelectCategory }) => {
-  const handleSmoothScroll = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
-    e.preventDefault();
+const PROOF = [
+  {
+    title: 'Written for your market',
+    body: 'Every guide assumes you are selling from outside the usual hiring countries, and deals with payment routes that actually exist there.',
+  },
+  {
+    title: 'Action, not theory',
+    body: 'Each chapter ends in a task you can finish the same day: a script to send, a price table to fill in, a calendar to start.',
+  },
+  {
+    title: 'Buy one, not a course',
+    body: 'No subscription and no drip feed. One PDF, yours forever, and free updates when an edition is revised.',
+  },
+];
 
-    // If clicking Shop Now, reset filter to All
-    if (targetId === 'shopping-grid') {
-      onSelectCategory('All');
-    }
-
-    const element = document.getElementById(targetId);
-    if (element) {
-      const headerOffset = 80; // Height of the sticky navbar
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.scrollY - headerOffset;
-
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: "smooth"
-      });
-    }
-  };
-
+export const Hero: React.FC<HeroProps> = ({ onBrowse }) => {
   return (
-    <div className="relative overflow-hidden bg-stone-100">
-      <div className="max-w-7xl mx-auto">
-        <div className="relative z-10 pb-8 bg-stone-100 sm:pb-16 md:pb-20 lg:max-w-2xl lg:w-full lg:pb-28 xl:pb-32 min-h-[600px] flex flex-col justify-center px-4 sm:px-6 lg:px-8">
-          <main className="mt-10 mx-auto max-w-7xl sm:mt-12 md:mt-16 lg:mt-20 xl:mt-28">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              className="sm:text-center lg:text-left"
-            >
-              <h1 className="text-4xl tracking-tight font-bold text-stone-900 sm:text-5xl md:text-6xl font-serif">
-                <span className="block xl:inline">GEEZ MADE IN ETHIOPIA</span>{' '}
-                <span className="block text-stone-600 xl:inline">Wear Your Heritage</span>
-              </h1>
-              <div className="mt-3 text-base text-stone-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
-                <p className="mb-4">
-                  Welcome to GEEZ MADE IN ETHIOPIA, where ancient aesthetics meet modern apparel.
-                  We are a cultural cloth store dedicated to reviving and blending Ethiopian traditions with contemporary design. We transform the rich narratives and forgotten symbols of Ethiopia into wearable art—stylish T-shirts that tell a powerful story.
-                </p>
-              </div>
+    <section id="top" className="relative overflow-hidden border-b border-stone-200 bg-stone-100">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {/* No entrance animation here on purpose: above-the-fold copy must be
+            painted on the first frame, without waiting for JavaScript. */}
+        <div className="grid items-center gap-14 py-14 lg:grid-cols-2 lg:py-24">
+          <div>
+            <div className="mb-6 flex flex-wrap items-center gap-x-3 gap-y-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-stone-500">
+              <span>10 guides</span>
+              <span className="h-1 w-1 rounded-full bg-stone-400" />
+              <span>907 pages</span>
+              <span className="h-1 w-1 rounded-full bg-stone-400" />
+              <span>Instant PDF download</span>
+            </div>
 
-              <div className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start gap-4 mb-10">
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="rounded-md shadow"
-                >
-                  <a
-                    href="#shopping-grid"
-                    onClick={(e) => handleSmoothScroll(e, 'shopping-grid')}
-                    className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-full text-white bg-stone-900 hover:bg-stone-800 md:py-4 md:text-lg transition-all"
-                  >
-                    Shop Now
-                  </a>
-                </motion.div>
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="mt-3 sm:mt-0 sm:ml-3"
-                >
-                  <a
-                    href="#lookbook"
-                    onClick={(e) => handleSmoothScroll(e, 'lookbook')}
-                    className="w-full flex items-center justify-center px-8 py-3 border border-stone-300 text-base font-medium rounded-full text-stone-700 bg-white hover:bg-stone-50 md:py-4 md:text-lg transition-all"
-                  >
-                    View Lookbook <ArrowUpRight className="ml-2 w-4 h-4" />
-                  </a>
-                </motion.div>
-              </div>
-            </motion.div>
+            <h1 className="font-serif text-4xl font-bold tracking-tight text-stone-900 sm:text-5xl lg:text-[3.4rem] lg:leading-[1.05]">
+              Ten guides to
+              <span className="block text-stone-500">earning online.</span>
+            </h1>
 
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.4, duration: 0.8 }}
-              className="mt-8 border-t border-stone-200 pt-6"
-            >
-              <h3 className="text-lg font-bold text-stone-900 font-serif mb-4">Why Choose GEEZ?</h3>
+            <p className="mt-6 max-w-xl text-base leading-relaxed text-stone-600 sm:text-lg">
+              Short, practical playbooks for people who want the work explained without the gurus:
+              what to sell, what to charge in dollars, how to get paid from where you live, and a
+              calendar that ends in a real invoice.
+            </p>
+
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={onBrowse}
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-stone-900 px-7 py-3.5 text-base font-medium text-white transition-colors hover:bg-stone-800"
+              >
+                Browse the library <ArrowDown size={18} />
+              </motion.button>
+              <motion.a
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                href={FREE_INDEX.file}
+                download
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-stone-300 bg-white px-7 py-3.5 text-base font-medium text-stone-800 transition-colors hover:bg-stone-50"
+              >
+                <Download size={18} /> Free index
+              </motion.a>
+            </div>
+
+            <div className="mt-10 space-y-4 border-t border-stone-200 pt-8">
+              <h2 className="font-serif text-base font-bold text-stone-900">Why these guides</h2>
               <ul className="space-y-4 text-sm text-stone-600">
-                <li className="flex flex-col sm:flex-row gap-1 sm:gap-2">
-                  <span className="font-bold text-stone-900 min-w-fit">Ethiopian Essence:</span>
-                  <span>Designs rooted in authentic motifs symbolizing prosperity, community, and pride.</span>
-                </li>
-                <li className="flex flex-col sm:flex-row gap-1 sm:gap-2">
-                  <span className="font-bold text-stone-900 min-w-fit">Premium Quality:</span>
-                  <span>Imported, 100% Cotton shirts utilizing advanced printing techniques, including our signature DTF printing, for vibrant, lasting results.</span>
-                </li>
-                <li className="flex flex-col sm:flex-row gap-1 sm:gap-2">
-                  <span className="font-bold text-stone-900 min-w-fit">Customization:</span>
-                  <span>Design your own piece or choose from our curated collections to create a stylish, empowered, and comfortable cultural statement.</span>
-                </li>
+                {PROOF.map((item) => (
+                  <li key={item.title} className="flex flex-col gap-1 sm:flex-row sm:gap-2">
+                    <span className="min-w-fit font-bold text-stone-900">{item.title}:</span>
+                    <span>{item.body}</span>
+                  </li>
+                ))}
               </ul>
-              <p className="mt-8 text-stone-900 font-serif italic font-medium text-lg">
-                "Reborn traditions. Redefined style."
+              <p className="pt-2 font-serif text-lg italic text-stone-900">
+                "No audience. No budget. Just a plan."
               </p>
-            </motion.div>
+            </div>
+          </div>
 
-          </main>
+          {/* Cover collage — built from the same SVGs the store sells */}
+          <div className="relative mx-auto h-[440px] w-full max-w-lg sm:h-[520px]">
+            <img
+              src="/covers/01-first-500-dollars-online.svg"
+              alt="The First $500 Online guide cover"
+              className="absolute left-0 top-10 hidden w-[45%] -rotate-[9deg] rounded-sm shadow-xl ring-1 ring-black/10 sm:block"
+            />
+            <img
+              src="/covers/complete-library.svg"
+              alt="The Complete Library bundle cover"
+              className="absolute right-0 top-0 hidden w-[42%] rotate-[7deg] rounded-sm shadow-xl ring-1 ring-black/10 sm:block"
+            />
+            <img
+              src="/covers/06-sell-digital-products.svg"
+              alt="Sell Digital Products guide cover"
+              className="absolute left-1/2 top-14 z-10 w-[62%] -translate-x-1/2 rounded-sm shadow-2xl ring-1 ring-black/10 sm:top-20 sm:w-[54%]"
+            />
+            <div className="absolute bottom-2 left-1/2 z-20 flex -translate-x-1/2 items-center gap-2 whitespace-nowrap rounded-full border border-stone-200 bg-white px-4 py-2 text-xs font-medium text-stone-700 shadow-lg">
+              <FileText size={14} className="text-stone-500" />
+              907 pages, delivered as PDF
+            </div>
+          </div>
         </div>
       </div>
-      <motion.div
-        initial={{ opacity: 0, x: 100 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 1 }}
-        className="lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2"
-      >
-        <img
-          className="h-56 w-full object-cover sm:h-72 md:h-96 lg:w-full lg:h-full"
-          src="https://picsum.photos/800/1000?random=1"
-          alt="Fashion model"
-        />
-      </motion.div>
-    </div>
+    </section>
   );
 };
