@@ -43,7 +43,7 @@ export const PRODUCTS: Product[] = [
   guide(1, '01-first-500-dollars-online', {
     name: 'The First $500 Online',
     tagline: 'A 30-day blueprint for your first dollar online',
-    price: 19,
+    price: 5.99,
     category: 'Start Here',
     pages: 87,
     badge: 'Start here',
@@ -81,7 +81,7 @@ export const PRODUCTS: Product[] = [
   guide(2, '02-freelancer-starter-system', {
     name: 'Freelancer Starter System',
     tagline: 'From zero clients to a booked calendar',
-    price: 24,
+    price: 7.99,
     category: 'Freelance & Remote',
     pages: 88,
     description:
@@ -116,7 +116,7 @@ export const PRODUCTS: Product[] = [
   guide(3, '03-ai-income-system', {
     name: 'AI Income System',
     tagline: 'Sell AI-assisted work that does not sound like a robot',
-    price: 27,
+    price: 9.99,
     category: 'AI & Design',
     pages: 99,
     badge: 'New',
@@ -153,7 +153,7 @@ export const PRODUCTS: Product[] = [
   guide(4, '04-social-media-manager-starter', {
     name: 'Social Media Manager Starter',
     tagline: 'Run content for local businesses, get paid monthly',
-    price: 24,
+    price: 7.99,
     category: 'Content & Social',
     pages: 89,
     description:
@@ -188,7 +188,7 @@ export const PRODUCTS: Product[] = [
   guide(5, '05-canva-to-cash', {
     name: 'Canva to Cash',
     tagline: 'Design services without a design degree',
-    price: 19,
+    price: 5.99,
     category: 'AI & Design',
     pages: 76,
     description:
@@ -223,7 +223,7 @@ export const PRODUCTS: Product[] = [
   guide(6, '06-sell-digital-products', {
     name: 'Sell Digital Products',
     tagline: 'Find a problem, build the fix, get paid',
-    price: 29,
+    price: 11.99,
     category: 'Products & Services',
     pages: 99,
     badge: 'Bestseller',
@@ -259,7 +259,7 @@ export const PRODUCTS: Product[] = [
   guide(7, '07-remote-work-starter', {
     name: 'Remote Work Starter',
     tagline: 'Land a remote role from anywhere',
-    price: 24,
+    price: 7.99,
     category: 'Freelance & Remote',
     pages: 100,
     description:
@@ -294,7 +294,7 @@ export const PRODUCTS: Product[] = [
   guide(8, '08-content-income-system', {
     name: 'Content Income System',
     tagline: 'Six paths from audience to income',
-    price: 27,
+    price: 9.99,
     category: 'Content & Social',
     pages: 99,
     description:
@@ -329,7 +329,7 @@ export const PRODUCTS: Product[] = [
   guide(9, '09-online-service-business', {
     name: 'Online Service Business',
     tagline: 'Ten services local businesses actually buy',
-    price: 29,
+    price: 14.99,
     category: 'Products & Services',
     pages: 101,
     badge: 'Bestseller',
@@ -365,7 +365,7 @@ export const PRODUCTS: Product[] = [
   guide(10, '10-digital-business-challenge', {
     name: 'Digital Business Challenge',
     tagline: '30 days from idea to first payment',
-    price: 17,
+    price: 5.99,
     category: 'Start Here',
     pages: 69,
     description:
@@ -402,8 +402,8 @@ const BUNDLE_BASE = {
   checkoutUrl: `https://whop.com/geez-digital/products/${WHOP_PRODUCT_SLUGS['complete-library']}/`,
   name: 'The Complete Library',
   tagline: 'All ten playbooks, 907 pages, one download',
-  price: 79,
-  compareAt: 239,
+  price: 39.99,
+  compareAt: 88.9,
   category: 'Start Here' as const,
   image: '/covers/complete-library.svg',
   file: '',
