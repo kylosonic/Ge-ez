@@ -101,27 +101,30 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
                   </button>
                 </div>
 
-                <div className="mt-4 flex items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <button
-                      type="button"
-                      onClick={() => onProductClick(product)}
-                      className="block text-left"
-                    >
-                      <h3 className="truncate text-[15px] font-semibold text-stone-900 group-hover:underline group-hover:decoration-stone-300 group-hover:underline-offset-4">
-                        {product.name}
-                      </h3>
-                    </button>
-                    <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-stone-500">
-                      {product.tagline}
+                <div className="mt-4 min-w-0">
+                  <button
+                    type="button"
+                    onClick={() => onProductClick(product)}
+                    className="block w-full text-left"
+                  >
+                    <h3 className="line-clamp-2 min-h-10 break-words text-[14px] font-semibold leading-5 text-stone-900 group-hover:underline group-hover:decoration-stone-300 group-hover:underline-offset-4 sm:text-[15px]">
+                      {product.name}
+                    </h3>
+                  </button>
+                  <p className="mt-1 line-clamp-2 min-h-8 break-words text-[11px] leading-4 text-stone-500 sm:text-xs sm:leading-relaxed">
+                    {product.tagline}
+                  </p>
+                  <div className="mt-2 flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
+                    <p className="flex min-w-0 items-center gap-1 whitespace-nowrap text-[10px] uppercase tracking-wide text-stone-400 sm:text-[11px]">
+                      <FileText size={11} className="flex-shrink-0" />
+                      <span>
+                        {product.pages} pages · PDF
+                      </span>
                     </p>
-                    <p className="mt-2 flex items-center gap-1 text-[11px] uppercase tracking-wide text-stone-400">
-                      <FileText size={11} /> {product.pages} pages · PDF
+                    <p className="ml-auto whitespace-nowrap text-sm font-semibold text-stone-900 sm:text-[15px]">
+                      {formatUSD(product.price)}
                     </p>
                   </div>
-                  <p className="whitespace-nowrap text-[15px] font-semibold text-stone-900">
-                    {formatUSD(product.price)}
-                  </p>
                 </div>
               </motion.article>
             );

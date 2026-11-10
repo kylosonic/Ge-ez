@@ -52,7 +52,7 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-stone-50 font-sans text-stone-900 selection:bg-stone-200">
+    <div className="min-h-screen overflow-x-clip bg-stone-50 font-sans text-stone-900 selection:bg-stone-200">
       <Toaster position="top-center" richColors />
       <Navbar />
 

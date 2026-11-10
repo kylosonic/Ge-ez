@@ -15,7 +15,7 @@ export const BundleBanner: React.FC<BundleBannerProps> = ({ onBuyBundle, onBrows
   return (
     <section id="bundle" className="border-y border-stone-200 bg-white py-16 sm:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid items-center gap-12 rounded-3xl bg-stone-950 p-8 text-white sm:p-12 lg:grid-cols-[300px_1fr] lg:gap-16">
+        <div className="grid items-center gap-10 rounded-3xl bg-stone-950 p-6 text-white sm:gap-12 sm:p-12 lg:grid-cols-[300px_1fr] lg:gap-16">
           <div className="mx-auto w-48 sm:w-56 lg:mx-0">
             <img
               src={BUNDLE.image}
