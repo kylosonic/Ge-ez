@@ -7,6 +7,8 @@ import { ProductGrid } from './components/ProductGrid';
 import { BundleBanner } from './components/BundleBanner';
 import { Footer } from './components/Footer';
 import { ProductDetailModal } from './components/ProductDetailModal';
+import { WhopCheckoutModal } from './components/WhopCheckoutModal';
+import { PurchaseReturn } from './components/PurchaseReturn';
 import type { Product } from './types';
 import { BUNDLE, PRODUCTS } from './data/catalog';
 
@@ -17,13 +19,12 @@ function scrollToSection(id: string) {
   window.scrollTo({ top, behavior: 'smooth' });
 }
 
-function openWhopCheckout(product: Product) {
-  window.location.assign(product.checkoutUrl);
-}
-
 export default function App() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [checkoutProduct, setCheckoutProduct] = useState<Product | null>(null);
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const query = useMemo(() => new URLSearchParams(window.location.search), []);
+  const isCheckoutReturn = window.location.pathname === '/checkout/return';
 
   const relatedProducts = useMemo(() => {
     if (!selectedProduct) return [];
@@ -39,6 +40,17 @@ export default function App() {
     scrollToSection('library');
   };
 
+  if (isCheckoutReturn) {
+    return (
+      <PurchaseReturn
+        paymentId={query.get('payment')}
+        paymentStatus={query.get('status')}
+        productSlug={query.get('product')}
+        onReturnHome={() => window.location.assign('/')}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-stone-50 font-sans text-stone-900 selection:bg-stone-200">
       <Toaster position="top-center" richColors />
@@ -49,7 +61,7 @@ export default function App() {
         <LibraryShowcase onSelectProduct={setSelectedProduct} />
         <ProductGrid
           products={PRODUCTS}
-          onAddToCart={openWhopCheckout}
+          onAddToCart={setCheckoutProduct}
           onProductClick={setSelectedProduct}
           selectedCategory={selectedCategory}
           onSelectCategory={(category) => {
@@ -58,12 +70,12 @@ export default function App() {
           }}
         />
         <BundleBanner
-          onBuyBundle={() => openWhopCheckout(BUNDLE)}
+          onBuyBundle={() => setCheckoutProduct(BUNDLE)}
           onBrowse={browse}
         />
       </main>
 
-      <Footer onBrowse={browse} onBuyBundle={() => openWhopCheckout(BUNDLE)} />
+      <Footer onBrowse={browse} onBuyBundle={() => setCheckoutProduct(BUNDLE)} />
 
       <ProductDetailModal
         isOpen={!!selectedProduct}
@@ -71,7 +83,10 @@ export default function App() {
         product={selectedProduct}
         relatedProducts={relatedProducts}
         onSelectProduct={setSelectedProduct}
+        onBuy={setCheckoutProduct}
       />
+
+      <WhopCheckoutModal product={checkoutProduct} onClose={() => setCheckoutProduct(null)} />
     </div>
   );
 }

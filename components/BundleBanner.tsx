@@ -57,7 +57,7 @@ export const BundleBanner: React.FC<BundleBannerProps> = ({ onBuyBundle, onBrows
                 onClick={onBuyBundle}
                 className="inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 text-base font-semibold text-stone-900 transition-colors hover:bg-stone-100"
               >
-                Buy on Whop — {formatUSD(BUNDLE.price)}
+                Buy now — {formatUSD(BUNDLE.price)}
                 <ArrowRight size={18} />
               </motion.button>
               <button

@@ -11,6 +11,7 @@ interface ProductDetailModalProps {
   onClose: () => void;
   product: Product | null;
   relatedProducts: Product[];
+  onBuy: (product: Product) => void;
   onSelectProduct: (product: Product) => void;
 }
 
@@ -19,6 +20,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   onClose,
   product,
   relatedProducts,
+  onBuy,
   onSelectProduct,
 }) => {
   React.useEffect(() => {
@@ -156,16 +158,20 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   <TrustBadges />
 
                   <div className="mt-2 flex flex-col gap-3 sm:flex-row">
-                    <a
-                      href={product.checkoutUrl}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onBuy(product);
+                        onClose();
+                      }}
                       className="flex flex-1 items-center justify-center gap-2 rounded-full bg-stone-900 px-6 py-3.5 text-base font-medium text-white shadow-lg transition-all hover:bg-stone-800 active:scale-[0.99]"
                     >
                       <ShoppingBag size={18} />
-                      Buy securely on Whop — {formatUSD(product.price)}
-                    </a>
+                      Buy now — {formatUSD(product.price)}
+                    </button>
                   </div>
                   <p className="mt-3 text-center text-[11px] text-stone-500">
-                    Secure Whop checkout · Instant access · 30-day guarantee
+                    Secure Whop payment · Instant download · 30-day guarantee
                   </p>
 
                   <FAQ />

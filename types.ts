@@ -17,6 +17,8 @@ export interface Product {
   slug: string;
   /** Public Whop product page used for checkout and fulfilment. */
   checkoutUrl: string;
+  /** Whop price plan used by the embedded checkout. */
+  planId: string;
   name: string;
   tagline: string;
   /** Selling price in USD. */
@@ -26,7 +28,7 @@ export interface Product {
   category: ProductCategory;
   /** Cover artwork (SVG served from /public). */
   image: string;
-  /** Downloadable PDF (served from /public). */
+  /** Public sample path, or an empty value for a protected paid PDF. */
   file: string;
   pages: number;
   description: string;

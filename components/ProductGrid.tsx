@@ -90,15 +90,15 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
                     </div>
                   </button>
 
-                  <a
-                    href={product.checkoutUrl}
+                  <button
+                    type="button"
                     onClick={() => onAddToCart(product)}
                     className="absolute bottom-3 right-3 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-stone-900 shadow-lg transition-all hover:bg-black hover:text-white sm:translate-y-1 sm:opacity-0 sm:group-hover:translate-y-0 sm:group-hover:opacity-100"
-                    aria-label={`Buy ${product.name} on Whop`}
-                    title="Buy securely on Whop"
+                    aria-label={`Buy ${product.name}`}
+                    title="Buy now"
                   >
                     <ShoppingBag size={18} />
-                  </a>
+                  </button>
                 </div>
 
                 <div className="mt-4 flex items-start justify-between gap-3">
@@ -142,8 +142,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
       )}
 
       <p className="mt-12 border-t border-stone-200 pt-6 text-center text-xs text-stone-500">
-        Purchases are completed securely on Whop. After checkout, your guide is available in your
-        Whop library.
+        Checkout and download happen right here. Payments are processed securely by Whop.
       </p>
     </section>
   );

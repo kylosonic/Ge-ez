@@ -12,6 +12,8 @@
     "sample": "python tools/make-sample-pdf.py"
   },
   "dependencies": {
+    "@whop/elements": "^1.10.0",
+    "@whop/elements-react": "^1.10.0",
     "framer-motion": "^12.24.7",
     "lucide-react": "^0.554.0",
     "react": "^19.2.0",

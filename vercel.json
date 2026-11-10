@@ -1,0 +1,13 @@
+{
+  "functions": {
+    "api/download.js": {
+      "includeFiles": "private/products/**"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/checkout/return",
+      "destination": "/index.html"
+    }
+  ]
+}

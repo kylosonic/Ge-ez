@@ -3,12 +3,10 @@ import type { CartItem, Product } from '../types';
 /**
  * The Ge'ez Digital catalog.
  *
- * Every entry maps 1:1 to a PDF in /public/products, generated from the
+ * Every paid entry maps 1:1 to a protected PDF in /private/products, generated from the
  * `output-global` source folder. Chapter lists are the guide's own outline, so
  * the product page never promises something the PDF does not contain.
  */
-
-const PDF_BASE = '/products';
 
 const WHOP_PRODUCT_SLUGS: Record<string, string> = {
   '01-first-500-dollars-online': 'the-first-500-online-7f',
@@ -24,17 +22,32 @@ const WHOP_PRODUCT_SLUGS: Record<string, string> = {
   'complete-library': 'membership-4dfa',
 };
 
+const WHOP_PLAN_IDS: Record<string, string> = {
+  '01-first-500-dollars-online': 'plan_MJMp9M0Td50KT',
+  '02-freelancer-starter-system': 'plan_6wiyM84r7nb0P',
+  '03-ai-income-system': 'plan_cgqdR7zthtsoy',
+  '04-social-media-manager-starter': 'plan_IQfCapPnHIiZT',
+  '05-canva-to-cash': 'plan_mYpgqOwPDVAbF',
+  '06-sell-digital-products': 'plan_cHL65aVUaGpXV',
+  '07-remote-work-starter': 'plan_vsBhCoAtrR0rL',
+  '08-content-income-system': 'plan_L3ciCOPVvQQjx',
+  '09-online-service-business': 'plan_wnz6ZU0COcjUH',
+  '10-digital-business-challenge': 'plan_LpGCW7Fv8xqpu',
+  'complete-library': 'plan_UZue2BdCxkEbk',
+};
+
 function guide(
   id: number,
   slug: string,
-  rest: Omit<Product, 'id' | 'slug' | 'image' | 'file' | 'checkoutUrl'>,
+  rest: Omit<Product, 'id' | 'slug' | 'image' | 'file' | 'checkoutUrl' | 'planId'>,
 ): Product {
   return {
     id,
     slug,
     checkoutUrl: `https://whop.com/geez-digital/products/${WHOP_PRODUCT_SLUGS[slug]}/`,
+    planId: WHOP_PLAN_IDS[slug],
     image: `/covers/${slug}.svg`,
-    file: `${PDF_BASE}/${slug}.pdf`,
+    file: '',
     ...rest,
   };
 }
@@ -400,6 +413,7 @@ const BUNDLE_BASE = {
   id: 100,
   slug: 'complete-library',
   checkoutUrl: `https://whop.com/geez-digital/products/${WHOP_PRODUCT_SLUGS['complete-library']}/`,
+  planId: WHOP_PLAN_IDS['complete-library'],
   name: 'The Complete Library',
   tagline: 'All ten playbooks, 907 pages, one download',
   price: 39.99,
