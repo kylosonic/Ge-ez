@@ -57,7 +57,7 @@ export default function App() {
       <Navbar />
 
       <main>
-        <Hero onBrowse={browse} />
+        <Hero onBrowse={browse} onBuyBundle={() => setCheckoutProduct(BUNDLE)} />
         <LibraryShowcase onSelectProduct={setSelectedProduct} />
         <ProductGrid
           products={PRODUCTS}

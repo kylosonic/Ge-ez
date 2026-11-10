@@ -93,11 +93,12 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
                   <button
                     type="button"
                     onClick={() => onAddToCart(product)}
-                    className="absolute bottom-3 right-3 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-stone-900 shadow-lg transition-all hover:bg-black hover:text-white sm:translate-y-1 sm:opacity-0 sm:group-hover:translate-y-0 sm:group-hover:opacity-100"
-                    aria-label={`Buy ${product.name}`}
-                    title="Buy now"
+                    className="absolute bottom-3 right-3 z-10 flex h-10 items-center justify-center gap-1.5 rounded-full bg-white/95 px-3 text-xs font-semibold text-stone-900 shadow-lg transition-all hover:bg-black hover:text-white sm:translate-y-1 sm:opacity-0 sm:group-hover:translate-y-0 sm:group-hover:opacity-100"
+                    aria-label={`Buy ${product.name} now`}
+                    title={`Buy now for ${formatUSD(product.price)}`}
                   >
-                    <ShoppingBag size={18} />
+                    <ShoppingBag size={16} />
+                    Buy
                   </button>
                 </div>
 

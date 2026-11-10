@@ -1,6 +1,10 @@
 import React, { useEffect, useMemo } from 'react';
 import { X, ShieldCheck } from 'lucide-react';
-import { Checkout, CheckoutElement, WhopElements } from '@whop/elements-react';
+import {
+  Checkout,
+  CheckoutElement,
+  WhopElements,
+} from '@whop/elements-react';
 import { loadWhop } from '@whop/elements';
 import type { Product } from '../types';
 
@@ -42,7 +46,7 @@ export const WhopCheckoutModal: React.FC<WhopCheckoutModalProps> = ({ product, o
       />
 
       <div className="relative flex min-h-full items-center justify-center p-3 sm:p-6">
-        <section className="relative w-full max-w-3xl overflow-hidden rounded-2xl bg-white shadow-2xl">
+        <section className="relative flex max-h-[calc(100dvh-1.5rem)] w-full max-w-3xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl sm:max-h-[calc(100dvh-3rem)]">
           <div className="flex items-start justify-between gap-4 border-b border-stone-200 px-5 py-4 sm:px-7">
             <div>
               <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-stone-500">
@@ -60,7 +64,7 @@ export const WhopCheckoutModal: React.FC<WhopCheckoutModalProps> = ({ product, o
             </button>
           </div>
 
-          <div className="max-h-[calc(100vh-8rem)] overflow-y-auto bg-stone-50 p-3 sm:p-5">
+          <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain bg-stone-50 p-3 sm:p-5">
             <WhopElements elements={whopElements}>
               <Checkout
                 key={product.slug}
@@ -83,7 +87,7 @@ export const WhopCheckoutModal: React.FC<WhopCheckoutModalProps> = ({ product, o
             </WhopElements>
           </div>
 
-          <div className="flex items-center justify-center gap-2 border-t border-stone-200 bg-white px-5 py-3 text-xs text-stone-500">
+          <div className="flex flex-shrink-0 items-center justify-center gap-2 border-t border-stone-200 bg-white px-5 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 text-center text-xs text-stone-500">
             <ShieldCheck size={14} className="text-emerald-700" />
             Payment is processed securely by Whop. Your download is released after verification.
           </div>

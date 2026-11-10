@@ -1,10 +1,11 @@
 import React from 'react';
 import { ArrowDown, Download, FileText } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { FREE_INDEX } from '../data/catalog';
+import { BUNDLE, FREE_INDEX, formatUSD } from '../data/catalog';
 
 interface HeroProps {
   onBrowse: () => void;
+  onBuyBundle: () => void;
 }
 
 const PROOF = [
@@ -22,7 +23,7 @@ const PROOF = [
   },
 ];
 
-export const Hero: React.FC<HeroProps> = ({ onBrowse }) => {
+export const Hero: React.FC<HeroProps> = ({ onBrowse, onBuyBundle }) => {
   return (
     <section id="top" className="relative overflow-hidden border-b border-stone-200 bg-stone-100">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -58,16 +59,23 @@ export const Hero: React.FC<HeroProps> = ({ onBrowse }) => {
               >
                 Browse the library <ArrowDown size={18} />
               </motion.button>
-              <motion.a
+              <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                href={FREE_INDEX.file}
-                download
+                type="button"
+                onClick={onBuyBundle}
                 className="inline-flex items-center justify-center gap-2 rounded-full border border-stone-300 bg-white px-7 py-3.5 text-base font-medium text-stone-800 transition-colors hover:bg-stone-50"
               >
-                <Download size={18} /> Free index
-              </motion.a>
+                Get all 10 — {formatUSD(BUNDLE.price)}
+              </motion.button>
             </div>
+            <a
+              href={FREE_INDEX.file}
+              download
+              className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-stone-500 underline decoration-stone-300 underline-offset-4 transition-colors hover:text-stone-900"
+            >
+              <Download size={14} /> Preview the free index
+            </a>
 
             <div className="mt-10 space-y-4 border-t border-stone-200 pt-8">
               <h2 className="font-serif text-base font-bold text-stone-900">Why these guides</h2>

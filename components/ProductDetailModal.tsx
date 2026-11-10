@@ -54,7 +54,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.96, y: 20 }}
               transition={{ duration: 0.25 }}
-              className="relative transform overflow-hidden rounded-xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-5xl"
+              className="relative flex max-h-[calc(100dvh-2rem)] w-full transform flex-col overflow-hidden rounded-xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:max-h-[calc(100dvh-4rem)] sm:w-full sm:max-w-5xl"
             >
               <button
                 onClick={onClose}
@@ -64,9 +64,10 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 <X size={22} />
               </button>
 
-              <div className="grid grid-cols-1 md:grid-cols-[minmax(0,0.85fr)_minmax(0,1fr)]">
+              <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+                <div className="grid grid-cols-1 md:grid-cols-[minmax(0,0.85fr)_minmax(0,1fr)]">
                 {/* Cover */}
-                <div className="relative flex items-start justify-center bg-stone-100 p-8 md:p-10">
+                <div className="relative flex items-start justify-center bg-stone-100 p-5 sm:p-8 md:p-10">
                   <div className="w-full max-w-[320px]">
                     <img
                       src={product.image}
@@ -88,7 +89,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 </div>
 
                 {/* Details */}
-                <div className="max-h-[85vh] overflow-y-auto p-7 sm:p-9">
+                <div className="p-5 sm:p-9">
                   <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-stone-500">
                     {product.category}
                   </span>
@@ -157,7 +158,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
                   <TrustBadges />
 
-                  <div className="mt-2 flex flex-col gap-3 sm:flex-row">
+                  <div className="mt-2 hidden flex-col gap-3 sm:flex sm:flex-row">
                     <button
                       type="button"
                       onClick={() => {
@@ -215,6 +216,24 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   </div>
                 </div>
               )}
+              </div>
+
+              <div className="flex-shrink-0 border-t border-stone-200 bg-white px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 sm:hidden">
+                <button
+                  type="button"
+                  onClick={() => {
+                    onBuy(product);
+                    onClose();
+                  }}
+                  className="flex w-full items-center justify-between gap-4 rounded-xl bg-stone-900 px-5 py-3.5 text-left text-white shadow-lg transition-colors hover:bg-stone-800 active:scale-[0.99]"
+                >
+                  <span className="flex items-center gap-2 text-sm font-semibold">
+                    <ShoppingBag size={17} />
+                    Buy PDF now
+                  </span>
+                  <span className="text-base font-semibold">{formatUSD(product.price)}</span>
+                </button>
+              </div>
             </motion.div>
           </div>
         </div>
