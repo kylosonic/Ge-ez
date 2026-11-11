@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Menu, X, ExternalLink, Download } from 'lucide-react';
+import { Menu, X, Download } from 'lucide-react';
 import { FREE_INDEX } from '../data/catalog';
 
 const NAV_LINKS = [
@@ -55,12 +55,6 @@ export const Navbar: React.FC = () => {
             >
               Free index <Download size={13} />
             </a>
-            <a
-              href="https://whop.com/home/"
-              className="inline-flex items-center gap-1.5 rounded-full border border-stone-300 bg-white px-4 py-2 text-sm font-semibold text-stone-900 transition-colors hover:bg-stone-100"
-            >
-              My Whop library <ExternalLink size={13} />
-            </a>
           </div>
         </div>
 
@@ -84,12 +78,6 @@ export const Navbar: React.FC = () => {
               className="flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium text-stone-700 hover:bg-stone-100"
             >
               <Download size={15} /> Free index
-            </a>
-            <a
-              href="https://whop.com/home/"
-              className="flex items-center gap-2 rounded-lg bg-stone-900 px-3 py-2.5 text-sm font-semibold text-white"
-            >
-              <ExternalLink size={15} /> My Whop library
             </a>
           </div>
         )}

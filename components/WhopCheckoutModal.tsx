@@ -219,12 +219,9 @@ export const WhopCheckoutModal: React.FC<WhopCheckoutModalProps> = ({ product, o
                   You already own this
                 </h3>
                 <p className="mt-2 text-sm leading-6 text-stone-600">{errorMessage}</p>
-                <a
-                  href="https://whop.com/geez-digital/"
-                  className="mt-6 inline-flex h-11 items-center justify-center rounded-xl bg-stone-950 px-5 text-sm font-semibold text-white hover:bg-stone-800"
-                >
-                  Open Whop library
-                </a>
+                <p className="mt-4 rounded-lg bg-stone-50 px-4 py-3 text-xs leading-5 text-stone-500">
+                  Your download link is in the purchase receipt Whop sent to this email address.
+                </p>
                 <button
                   type="button"
                   onClick={() => {

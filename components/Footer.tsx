@@ -1,5 +1,5 @@
 import React from 'react';
-import { Download, ArrowUp, ExternalLink } from 'lucide-react';
+import { Download, ArrowUp } from 'lucide-react';
 import { FREE_INDEX } from '../data/catalog';
 
 interface FooterProps {
@@ -23,12 +23,6 @@ export const Footer: React.FC<FooterProps> = ({ onBrowse, onBuyBundle }) => {
               A library of short, practical playbooks for earning online from anywhere. Ten
               guides, 907 pages, no subscriptions.
             </p>
-            <a
-              href="https://whop.com/geez-digital/"
-              className="mt-5 inline-flex items-center gap-2 text-sm text-stone-300 transition-colors hover:text-white"
-            >
-              Visit the Whop store <ExternalLink size={14} />
-            </a>
           </div>
 
           <div>
@@ -66,14 +60,6 @@ export const Footer: React.FC<FooterProps> = ({ onBrowse, onBuyBundle }) => {
               <li>Secure payment by Whop</li>
               <li>Immediate digital access</li>
               <li>Updates through Whop</li>
-              <li>
-                <a
-                  href="https://whop.com/home/"
-                  className="inline-flex items-center gap-1.5 transition-colors hover:text-white"
-                >
-                  Open my library <ExternalLink size={12} />
-                </a>
-              </li>
             </ul>
           </div>
         </div>
